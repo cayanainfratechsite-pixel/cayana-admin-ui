@@ -1,0 +1,75 @@
+import { limit } from "@/lib/data"; 
+import axios from "axios";
+
+const API_BASE_URL = "http://localhost:4000/api/v1";
+
+
+const getAccessToken = () => {
+  const match = document.cookie.match(/(^| )access-token=([^;]+)/);
+  return match ? match[2] : null;
+};
+
+export const fetchProjectEnquiry = async (page: number) => {
+  try {
+
+    const token = getAccessToken();
+
+    // Check if the token exists in the cookies
+    if (!token) {
+      throw new Error("Access token not found in cookies");
+    }
+
+
+    const response = await axios.get(`${API_BASE_URL}/enquiry`, {
+      params: {
+        page,
+        limit: limit,
+        category:'project',
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message ||
+          "An error occurred while fetching applications"
+      );
+    } else {
+      throw new Error("An unknown error occurred while fetching applications");
+    }
+  }
+}
+
+
+export const deleteProjectEnquiry = async (projectEnquiryId: string) => {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/enquiry/delete/${projectEnquiryId}`
+    );
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to delete the application");
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("Error deleting application:", error.response.data.message);
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("An error occurred while deleting the application");
+  }
+}
+
+
+export const downloadProjectEnquiry = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/enquiry/excel-download-enquiries?category=project`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in downloadAppliedJobs API call: ", error);
+    throw error;
+  }
+};

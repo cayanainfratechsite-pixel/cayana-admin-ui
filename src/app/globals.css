@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
+  font-family: "Inter", sans-serif !important;
+}
+
+.react-calendar__navigation__label__labelText {
+  font-weight: 600;
+}
+
+.react-calendar__tile--active {
+  background-color: #c3ebfa !important;
+  color: black !important;
+}
+
+.rbc-btn-group:first-child {
+  display: none !important;
+}
+
+.rbc-toolbar-label {
+  text-align: right !important;
+  padding: 0px 20px !important;
+}
+
+.rbc-btn-group:last-child {
+  font-size: 13px !important;
+}
+
+.rbc-btn-group:last-child button {
+  border: none !important;
+  background-color: #f1f0ff !important;
+  margin-left: 2px !important;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #dbdafe !important;
+  box-shadow: none !important;
+}
+
+.rbc-time-view {
+  border-color: #eee !important;
+}
+
+.rbc-time-header {
+  display: none !important;
+}
+
+.rbc-time-content {
+  border: none !important;
+}
+
+.rbc-time-gutter.rbc-time-column {
+  font-size: 12px !important;
+}
+
+.rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
+  padding: 0px 20px !important;
+}
+
+.rbc-timeslot-group {
+  background-color: #f7fdff !important;
+}
+
+.rbc-day-slot {
+  font-size: 14px !important;
+}
+
+.rbc-event {
+  border: none !important;
+  color: black !important;
+  padding: 10px !important;
+  margin: 10px !important;
+  width: 99% !important;
+}
+
+.rbc-event:nth-child(1) {
+  background-color: #e2f8ff !important;
+}
+
+.rbc-event:nth-child(2) {
+  background-color: #fefce8 !important;
+}
+
+.rbc-event:nth-child(3) {
+  background-color: #f2f1ff !important;
+}
+
+.rbc-event:nth-child(4) {
+  background-color: #fdf2fb !important;
+}
+
+.rbc-event:nth-child(5) {
+  background-color: #e2f8ff !important;
+}
+
+.rbc-event:nth-child(6) {
+  background-color: #fefce8 !important;
+}
+
+.rbc-event:nth-child(7) {
+  background-color: #f2f1ff !important;
+}
+
+.rbc-event:nth-child(8) {
+  background-color: #fdf2fb !important;
+}
+
+.rbc-event-label {
+  color: gray !important;
+  margin-bottom: 5px;
+}
+
+
+.password-strength-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.password-strength-line {
+  flex-grow: 1;
+  height: 5px;
+  transition: all 0.3s ease;
+}
+
+.password-strength-line.weak {
+  background-color: rgba(190, 0, 0, 0.358);
+  /* Light gray color */
+}
+
+.password-strength-line.medium {
+  background-color: #a46b003d;
+  /* Light gray color */
+}
+
+.password-strength-line.strong {
+  background-color: rgba(0, 118, 0, 0.429);
+  /* Light gray color */
+}
+
+.password-strength-line.active.weak {
+  background-color: red;
+  /* Red for weak */
+}
+
+.password-strength-line.active.medium {
+  background-color: #F6C23E;
+  /* Orange for medium */
+}
+
+.password-strength-line.active.strong {
+  background-color: #3CBC81;
+  /* Green for strong */
+}
+
+/* Custom styling for the Text Editor */
+
+
+
+.editor-container {
+  /* margin: 20px auto; */
+  /* max-width: 1000px;  */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  /* overflow: hidden; */
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the toolbar with a soft gradient and better spacing */
+.ql-toolbar {
+  border-bottom: 1px solid #eee;
+  background: linear-gradient(to right, #f7f7f7, #fafafa);
+  padding: 15px;
+  /* Increased padding for a more comfortable toolbar */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Container for custom undo/redo controls; pushes them to the right */
+.ql-custom-controls {
+  display: flex;
+  margin-left: auto;
+}
+
+/* Style for the custom Undo and Redo buttons */
+.ql-undo,
+.ql-redo {
+  margin: 0 8px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 13px;
+}
+
+.ql-undo:hover,
+.ql-redo:hover {
+  background-color: #0056b3;
+}
+
+.editor-container {
+  border: none;
+}
+
+/* Quill editor area */
+.ql-editor {
+  min-height: 300px;
+  /* padding: 20px; */
+  background-color: #ffffff;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  transition: border-color 0.3s ease;
+}
