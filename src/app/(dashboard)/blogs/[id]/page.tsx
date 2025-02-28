@@ -184,13 +184,6 @@ const BlogPage: React.FC = () => {
             Blog ID: {id}
           </Typography>
 
-          <Typography
-            variant="h6"
-            className="font-bold text-gray-800"
-            sx={{ mb: 4, fontWeight: 600 }}
-          >
-            Blog Title: <span className="text-zinc-500">{blog.title}</span>
-          </Typography>
 
           {/* Card Image Upload & Display */}
           <Grid item xs={12} sm={6}>
@@ -300,13 +293,53 @@ const BlogPage: React.FC = () => {
             )}
           </Grid>
 
-          <Box sx={{ mb: 4, mt: 4 }}>
+
+          {/* New Input Field for Publisher Name */}
+          <TextField
+            label="Publisher Name"
+            variant="outlined"
+            fullWidth
+            value={blog.publisherName}
+            onChange={(e) => handleChange("publisherName", e.target.value)}
+            sx={{
+              mb: 4,
+              mt: 4,
+              backgroundColor: "#f9f9f9",
+              borderRadius: 2,
+            }}
+          />
+
+          {/* New Input Field for Blog Title */}
+          <TextField
+            label="Blog Title"
+            variant="outlined"
+            fullWidth
+            value={blog.title}
+            onChange={(e) => handleChange("title", e.target.value)}
+            sx={{
+              mb: 4,
+              backgroundColor: "#f9f9f9",
+              borderRadius: 2,
+            }}
+          />
+          <div>
+            <Typography
+              variant="body1"
+              sx={{ borderBottom: "1px solid #ccc", marginBottom: "10px" }}
+            >
+              Content
+            </Typography>
+          </div>
+
+          {/* Text Editor for Blog Content */}
+          <Box sx={{ mb: 4 }}>
             <TextEditor
               onChange={(content) => handleChange("content", content)}
               initialContent={blog.content}
             />
           </Box>
 
+          {/* Approximate Read Time */}
           <TextField
             label="Approximate Read Time (in minutes)"
             variant="outlined"
