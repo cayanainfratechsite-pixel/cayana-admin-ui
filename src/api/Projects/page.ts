@@ -67,3 +67,4 @@ export const deleteProject = async (projectId: string) => {
     throw new Error("An error occurred while deleting the project");
   }
 };
+

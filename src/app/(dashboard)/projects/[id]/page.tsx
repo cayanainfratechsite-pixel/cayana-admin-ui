@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   TextField,
@@ -19,6 +19,7 @@ import {
   Chip,
   Avatar,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useParams, useRouter } from "next/navigation";
 import SnackbarComponent from "@/components/SnackbarComponent";
 
@@ -27,7 +28,7 @@ const EditProjectForm = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    status: "completed",
+    status: "",
     name: "",
     cardImage: "",
     basePrice: "",
@@ -41,7 +42,7 @@ const EditProjectForm = () => {
     overViewImage: "",
     details: "",
     locationEmbedURL: "",
-    gallery: [""],
+    gallery: [] as string[],
     brochureURL: "",
   });
 
@@ -54,6 +55,15 @@ const EditProjectForm = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+
+
+
+  const [cardImageFile, setCardImageFile] = useState<File | null>(null);
+  const [cardImagePreview, setCardImagePreview] = useState<string>("");
+
+
+
+  const cardImageInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch the list of available amenities.
   useEffect(() => {
@@ -81,7 +91,7 @@ const EditProjectForm = () => {
         const project = response.data.result;
         // Prepopulate form fields from the fetched project.
         setFormData({
-          status: project.status || "completed",
+          status: project.status || "",
           name: project.name || "",
           cardImage: project.cardImage || "",
           basePrice: project.basePrice?.toString() || "",
@@ -99,6 +109,7 @@ const EditProjectForm = () => {
           brochureURL: project.brochureURL || "",
         });
         setSelectedAmenities(project.amenities || []);
+        setCardImagePreview(project.cardImage || "");
       } catch (error) {
         console.error("Error fetching project:", error);
       } finally {
@@ -114,6 +125,26 @@ const EditProjectForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+    // --- File input handlers for Card Image ---
+    const handleCardImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        setCardImageFile(file);
+        const previewUrl = URL.createObjectURL(file);
+        setCardImagePreview(previewUrl);
+      }
+    };
+    const removeCardImage = () => {
+      setCardImageFile(null);
+      setCardImagePreview("");
+    };
+  
+
+
+
+
+
   const handleGalleryChange = (index: number, value: string) => {
     const newGallery = [...formData.gallery];
     newGallery[index] = value;
@@ -126,26 +157,44 @@ const EditProjectForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = {
-      ...formData,
-      basePrice: Number(formData.basePrice),
-      bedRooms: Number(formData.bedRooms),
-      size: Number(formData.size),
-      units: Number(formData.units),
-      // Map selected amenities to include only name and icon.
-      amenities: selectedAmenities.map((amenity: any) => ({
-        name: amenity.name,
-        icon: amenity.icon,
-      })),
-    };
+
+
+    const formDataPayload = new FormData();
+
+    formDataPayload.append("status", formData.status);
+    formDataPayload.append("name", formData.name);
+    formDataPayload.append("basePrice", formData.basePrice);
+    formDataPayload.append("type", formData.type);
+    formDataPayload.append("bedRooms", formData.bedRooms);
+    formDataPayload.append("size", formData.size);
+    formDataPayload.append("units", formData.units);
+    formDataPayload.append("locationName", formData.locationName);
+    formDataPayload.append("overview", formData.overview);
+    formDataPayload.append("details", formData.details);
+    formDataPayload.append("locationEmbedURL", formData.locationEmbedURL);
+    formDataPayload.append("brochureURL", formData.brochureURL);
+    // Append amenities as double-stringified JSON.
+    formDataPayload.append(
+      "amenities",
+      JSON.stringify(
+        JSON.stringify(
+          selectedAmenities.map((amenity: any) => ({
+            name: amenity.name,
+            icon: amenity.icon,
+          }))
+        )
+      )
+    );
+    if (cardImageFile) {
+      formDataPayload.append("cardImage", cardImageFile);
+    }
 
     try {
       const response = await fetch(
         `http://localhost:4000/api/v1/project/edit/${id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: formDataPayload,
         }
       );
       const result = await response.json();
@@ -217,15 +266,9 @@ const EditProjectForm = () => {
               </Grid>
 
               {/* Card Image URL */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Card Image URL"
-                  name="cardImage"
-                  value={formData.cardImage}
-                  onChange={handleChange}
-                />
+
+              <Grid item xs={12} > 
+                <Typography></Typography>
               </Grid>
 
               {/* Base Price */}
