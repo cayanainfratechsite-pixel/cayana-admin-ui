@@ -3,26 +3,12 @@ import axios from "axios";
 
 const API_BASE_URL = "http://145.223.23.134:4000/api/v1";
 
-const getAccessToken = () => {
-  const match = document.cookie.match(/(^| )access-token=([^;]+)/);
-  return match ? match[2] : null;
-};
-
 export const fetchProjects = async (page: number) => {
   try {
-    const token = getAccessToken();
-
-    if (!token) {
-      throw new Error("Access token not found in cookies");
-    }
-
     const response = await axios.get(`${API_BASE_URL}/project`, {
       params: {
         page,
         limit: limit,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -40,19 +26,8 @@ export const fetchProjects = async (page: number) => {
 
 export const deleteProject = async (projectId: string) => {
   try {
-    const token = getAccessToken();
-
-    if (!token) {
-      throw new Error("Access token not found in cookies");
-    }
-
     const response = await axios.delete(
-      `${API_BASE_URL}/project/delete/${projectId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `${API_BASE_URL}/project/delete/${projectId}`
     );
     if (response.status === 200) {
       return response.data;
@@ -67,4 +42,3 @@ export const deleteProject = async (projectId: string) => {
     throw new Error("An error occurred while deleting the project");
   }
 };
-

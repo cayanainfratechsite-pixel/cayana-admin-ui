@@ -13,7 +13,7 @@ const ProjectEnquiryPage: React.FC = () => {
       if (data.success === 0) {
         const link = document.createElement("a");
         link.href = data.result;
-        link.download = "AppliedJobs.xlsx";
+        link.download = "ProjectsEnquiry.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

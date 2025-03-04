@@ -509,7 +509,7 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Overview"
+                  label="Floor Details"
                   name="overview"
                   multiline
                   rows={3}
@@ -637,7 +637,6 @@ const EditProjectForm: React.FC = () => {
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
-                        key={option.name}
                         avatar={<Avatar src={option.icon} />}
                         label={option.name}
                         {...getTagProps({ index })}

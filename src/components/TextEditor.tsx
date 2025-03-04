@@ -66,7 +66,9 @@ const TextEditor: React.FC<TextEditorProps> = ({ onChange, initialContent }) => 
               const reader = new FileReader();
               reader.onload = (e) => {
                 const range = quill.getSelection();
-                quill.insertEmbed(range.index, "image", e.target?.result);
+                if (range) {
+                  quill.insertEmbed(range.index, "image", e.target?.result);
+                }
               };
               reader.readAsDataURL(file);
             }

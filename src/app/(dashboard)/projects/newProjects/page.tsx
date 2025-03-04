@@ -459,12 +459,12 @@ const AddProjectForm: React.FC = () => {
                   )}
                 </Grid>
 
-                {/* Overview Text */}
+                {/* Floor Text */}
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Overview"
+                    label="Floor Details"
                     name="overview"
                     multiline
                     rows={3}
@@ -473,7 +473,7 @@ const AddProjectForm: React.FC = () => {
                   />
                 </Grid>
 
-                {/* Overview Image File Upload */}
+                {/* Floor Image File Upload */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
                     Floor Image

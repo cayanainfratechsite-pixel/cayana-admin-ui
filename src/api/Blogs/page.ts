@@ -67,7 +67,7 @@ export const fetchBlogById = async (id: string): Promise<ApiResponse<Blog>> => {
 // Update blog by ID
 export const updateBlog = async (
   id: string,
-  updatedBlog: Partial<Blog>
+  updatedBlog: FormData
 ): Promise<ApiResponse<Blog>> => {
   try {
     const response = await axios.put<ApiResponse<Blog>>(

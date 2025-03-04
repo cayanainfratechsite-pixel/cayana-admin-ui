@@ -15,7 +15,7 @@ const ApplicationPage: React.FC = () => {
         // Create a temporary anchor element and trigger the download.
         const link = document.createElement("a");
         link.href = data.result;
-        link.download = "AppliedJobs.xlsx";
+        link.download = "Applications.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

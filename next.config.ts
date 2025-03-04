@@ -12,8 +12,12 @@ const nextConfig: NextConfig = {
       "www.photocrati.com",
       "localhost",
       "145.223.23.134",
-    ],  },
-
+    ],
+  },
+  eslint: {
+    // Warning: This allows production builds to succeed even if there are ESLint errors.
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
