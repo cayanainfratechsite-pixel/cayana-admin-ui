@@ -23,6 +23,7 @@ interface Applications {
   mobile: string;
   resume: string;
   message: string;
+  jobName: string;
 }
 
 interface ApplicationsResponse {
@@ -125,6 +126,7 @@ const ApplicationsTable: React.FC = () => {
     { header: "Mobile", accessor: "mobile", className: "px-4 py-2" },
     { header: "Resume", accessor: "resume", className: "px-4 py-2" },
     { header: "Message", accessor: "message", className: "px-4 py-2" },
+    { header: "Job Name", accessor: "jobName", className: "px-4 py-2" },
     { header: "Action", accessor: "action" },
   ];
 
@@ -153,6 +155,7 @@ const ApplicationsTable: React.FC = () => {
       </td>
 
       <td className="px-4 py-2">{applications.message}</td>
+      <td className="px-4 py-2">{applications.jobName}</td>
       <td>
         <div className="flex items-center gap-2">
           <button

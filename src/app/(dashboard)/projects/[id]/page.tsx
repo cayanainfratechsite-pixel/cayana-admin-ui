@@ -18,17 +18,20 @@ import {
   Autocomplete,
   Chip,
   Avatar,
+  Box,
+  IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useParams, useRouter } from "next/navigation";
 import SnackbarComponent from "@/components/SnackbarComponent";
+import { useParams, useRouter } from "next/navigation";
 
-const EditProjectForm = () => {
+const EditProjectForm: React.FC = () => {
   const { id } = useParams();
   const router = useRouter();
 
+  // Form fields; image fields are stored as URLs initially.
   const [formData, setFormData] = useState({
-    status: "",
+    status: "completed",
     name: "",
     cardImage: "",
     basePrice: "",
@@ -46,32 +49,37 @@ const EditProjectForm = () => {
     brochureURL: "",
   });
 
-  // State for amenities fetched from API and for selected amenity objects.
+  // Amenities & snackbar state.
   const [amenitiesOptions, setAmenitiesOptions] = useState<any[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
-
-
+  // File objects and preview states for image fields.
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [overviewImageFile, setOverviewImageFile] = useState<File | null>(null);
   const [cardImagePreview, setCardImagePreview] = useState<string>("");
+  const [coverImagePreview, setCoverImagePreview] = useState<string>("");
+  const [overviewImagePreview, setOverviewImagePreview] = useState<string>("");
 
+  // Gallery images: we'll store files and their preview URLs.
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
-
+  // Refs for file inputs.
   const cardImageInputRef = useRef<HTMLInputElement>(null);
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
+  const overviewImageInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch the list of available amenities.
+  // Fetch amenities options.
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/api/v1/amenity"
-        );
+        const response = await axios.get("http://145.223.23.134:4000/api/v1/amenity");
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -80,18 +88,15 @@ const EditProjectForm = () => {
     fetchAmenities();
   }, []);
 
-  // Fetch project data using the dynamic id.
+  // Fetch project data by id and prepopulate form fields and image previews.
   useEffect(() => {
     if (!id) return;
     const fetchProject = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/v1/project/${id}`
-        );
+        const response = await axios.get(`http://145.223.23.134:4000/api/v1/project/${id}`);
         const project = response.data.result;
-        // Prepopulate form fields from the fetched project.
         setFormData({
-          status: project.status || "",
+          status: project.status || "completed",
           name: project.name || "",
           cardImage: project.cardImage || "",
           basePrice: project.basePrice?.toString() || "",
@@ -105,11 +110,15 @@ const EditProjectForm = () => {
           overViewImage: project.overViewImage || "",
           details: project.details || "",
           locationEmbedURL: project.locationEmbedURL || "",
-          gallery: project.gallery || [""],
+          gallery: project.gallery || [],
           brochureURL: project.brochureURL || "",
         });
         setSelectedAmenities(project.amenities || []);
+        // Prepopulate image previews with the current image URLs.
         setCardImagePreview(project.cardImage || "");
+        setCoverImagePreview(project.coverImage || "");
+        setOverviewImagePreview(project.overViewImage || "");
+        setGalleryPreviews(project.gallery || []);
       } catch (error) {
         console.error("Error fetching project:", error);
       } finally {
@@ -125,42 +134,78 @@ const EditProjectForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // --- File input handlers for Card Image ---
+  const handleCardImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setCardImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setCardImagePreview(previewUrl);
+    }
+  };
+  const removeCardImage = () => {
+    setCardImageFile(null);
+    setCardImagePreview("");
+  };
 
-    // --- File input handlers for Card Image ---
-    const handleCardImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        setCardImageFile(file);
-        const previewUrl = URL.createObjectURL(file);
-        setCardImagePreview(previewUrl);
+  // --- File input handlers for Cover Image ---
+  const handleCoverImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setCoverImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setCoverImagePreview(previewUrl);
+    }
+  };
+  const removeCoverImage = () => {
+    setCoverImageFile(null);
+    setCoverImagePreview("");
+  };
+
+  // --- File input handlers for Overview Image ---
+  const handleOverviewImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setOverviewImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setOverviewImagePreview(previewUrl);
+    }
+  };
+  const removeOverviewImage = () => {
+    setOverviewImageFile(null);
+    setOverviewImagePreview("");
+  };
+
+  // --- File input handlers for Gallery Images ---
+  const handleGalleryFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newFiles: File[] = [];
+      const newPreviews: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        newFiles.push(files[i]);
+        newPreviews.push(URL.createObjectURL(files[i]));
       }
-    };
-    const removeCardImage = () => {
-      setCardImageFile(null);
-      setCardImagePreview("");
-    };
-  
-
-
-
-
-
-  const handleGalleryChange = (index: number, value: string) => {
-    const newGallery = [...formData.gallery];
-    newGallery[index] = value;
-    setFormData({ ...formData, gallery: newGallery });
+      const updatedFiles = [...galleryFiles, ...newFiles];
+      const updatedPreviews = [...galleryPreviews, ...newPreviews];
+      setGalleryFiles(updatedFiles);
+      setGalleryPreviews(updatedPreviews);
+    }
+  };
+  const removeGalleryImage = (index: number) => {
+    const updatedFiles = [...galleryFiles];
+    const updatedPreviews = [...galleryPreviews];
+    updatedFiles.splice(index, 1);
+    updatedPreviews.splice(index, 1);
+    setGalleryFiles(updatedFiles);
+    setGalleryPreviews(updatedPreviews);
   };
 
-  const addGalleryImage = () => {
-    setFormData({ ...formData, gallery: [...formData.gallery, ""] });
-  };
-
+  // --- Handle form submission ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
+    // Create a FormData object for multipart/form-data submission.
     const formDataPayload = new FormData();
-
     formDataPayload.append("status", formData.status);
     formDataPayload.append("name", formData.name);
     formDataPayload.append("basePrice", formData.basePrice);
@@ -185,25 +230,37 @@ const EditProjectForm = () => {
         )
       )
     );
+    // Append file fields if a new file was selected.
     if (cardImageFile) {
       formDataPayload.append("cardImage", cardImageFile);
     }
+    if (coverImageFile) {
+      formDataPayload.append("coverImage", coverImageFile);
+    }
+    if (overviewImageFile) {
+      formDataPayload.append("overViewImage", overviewImageFile);
+    }
+    // Append each gallery file if any.
+    if (galleryFiles.length > 0) {
+      galleryFiles.forEach((file) => {
+        formDataPayload.append("gallery", file);
+      });
+    }
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/api/v1/project/edit/${id}`,
-        {
-          method: "PUT",
-          body: formDataPayload,
-        }
-      );
+      const response = await fetch(`http://145.223.23.134:4000/api/v1/project/edit/${id}`, {
+        method: "PUT",
+        body: formDataPayload,
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error editing project.");
+      }
       const result = await response.json();
-
       console.log("Response:", result);
       setSnackbarMessage("Project edited successfully");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-
       setTimeout(() => {
         router.push("/projects");
       }, 2000);
@@ -265,10 +322,59 @@ const EditProjectForm = () => {
                 />
               </Grid>
 
-              {/* Card Image URL */}
-
-              <Grid item xs={12} > 
-                <Typography></Typography>
+              {/* Card Image Upload */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Card Image
+                </Typography>
+                <Box
+                  sx={{
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    p: 2,
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCardImageSelect}
+                    style={{ display: "none" }}
+                    id="card-image-upload"
+                    ref={cardImageInputRef}
+                  />
+                  <label htmlFor="card-image-upload" style={{ cursor: "pointer" }}>
+                    <Typography variant="body2" color="textSecondary">
+                      Click to select card image
+                    </Typography>
+                  </label>
+                </Box>
+                {cardImagePreview && (
+                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                    <img
+                      src={cardImagePreview}
+                      alt="Card Image Preview"
+                      style={{
+                        width: "100%",
+                        maxWidth: 150,
+                        borderRadius: 8,
+                      }}
+                    />
+                    <IconButton
+                      onClick={removeCardImage}
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bgcolor: "rgba(255,255,255,0.7)",
+                      }}
+                      size="small"
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
               </Grid>
 
               {/* Base Price */}
@@ -343,19 +449,62 @@ const EditProjectForm = () => {
                 />
               </Grid>
 
-              {/* Cover Image URL */}
+              {/* Cover Image Upload */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Cover Image URL"
-                  name="coverImage"
-                  value={formData.coverImage}
-                  onChange={handleChange}
-                />
+                <Typography variant="subtitle1" gutterBottom>
+                  Cover Image
+                </Typography>
+                <Box
+                  sx={{
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    p: 2,
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverImageSelect}
+                    style={{ display: "none" }}
+                    id="cover-image-upload"
+                    ref={coverImageInputRef}
+                  />
+                  <label htmlFor="cover-image-upload" style={{ cursor: "pointer" }}>
+                    <Typography variant="body2" color="textSecondary">
+                      Click to select cover image
+                    </Typography>
+                  </label>
+                </Box>
+                {coverImagePreview && (
+                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                    <img
+                      src={coverImagePreview}
+                      alt="Cover Image Preview"
+                      style={{
+                        width: "100%",
+                        maxWidth: 150,
+                        borderRadius: 8,
+                      }}
+                    />
+                    <IconButton
+                      onClick={removeCoverImage}
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bgcolor: "rgba(255,255,255,0.7)",
+                      }}
+                      size="small"
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
               </Grid>
 
-              {/* Overview */}
+              {/* Overview Text */}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -369,16 +518,59 @@ const EditProjectForm = () => {
                 />
               </Grid>
 
-              {/* Overview Image URL */}
+              {/* Overview Image Upload */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Overview Image URL"
-                  name="overViewImage"
-                  value={formData.overViewImage}
-                  onChange={handleChange}
-                />
+                <Typography variant="subtitle1" gutterBottom>
+                  Floor Image
+                </Typography>
+                <Box
+                  sx={{
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    p: 2,
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleOverviewImageSelect}
+                    style={{ display: "none" }}
+                    id="overview-image-upload"
+                    ref={overviewImageInputRef}
+                  />
+                  <label htmlFor="overview-image-upload" style={{ cursor: "pointer" }}>
+                    <Typography variant="body2" color="textSecondary">
+                      Click to select floor image
+                    </Typography>
+                  </label>
+                </Box>
+                {overviewImagePreview && (
+                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                    <img
+                      src={overviewImagePreview}
+                      alt="Overview Image Preview"
+                      style={{
+                        width: "100%",
+                        maxWidth: 150,
+                        borderRadius: 8,
+                      }}
+                    />
+                    <IconButton
+                      onClick={removeOverviewImage}
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bgcolor: "rgba(255,255,255,0.7)",
+                      }}
+                      size="small"
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
               </Grid>
 
               {/* Details */}
@@ -407,7 +599,7 @@ const EditProjectForm = () => {
                 />
               </Grid>
 
-              {/* Professional Amenities Autocomplete */}
+              {/* Amenities Autocomplete */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
                   Select Amenities
@@ -445,7 +637,7 @@ const EditProjectForm = () => {
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
-                        // key={option.name}
+                        key={option.name}
                         avatar={<Avatar src={option.icon} />}
                         label={option.name}
                         {...getTagProps({ index })}
@@ -462,27 +654,64 @@ const EditProjectForm = () => {
                 />
               </Grid>
 
-              {/* Gallery Section */}
+              {/* Gallery Images Upload */}
               <Grid item xs={12}>
                 <Typography variant="h6" className="mb-2">
                   Gallery Images
                 </Typography>
-              </Grid>
-              {formData.gallery.map((img, index) => (
-                <Grid item xs={12} key={index}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label={`Gallery Image URL ${index + 1}`}
-                    value={img}
-                    onChange={(e) => handleGalleryChange(index, e.target.value)}
-                  />
-                </Grid>
-              ))}
-              <Grid item xs={12}>
-                <Button variant="outlined" onClick={addGalleryImage}>
-                  Add Gallery Image
+                <Button variant="outlined" onClick={() => galleryInputRef.current?.click()}>
+                  Upload Gallery Images
                 </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  ref={galleryInputRef}
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                      const newFiles: File[] = [];
+                      const newPreviews: string[] = [];
+                      for (let i = 0; i < files.length; i++) {
+                        newFiles.push(files[i]);
+                        newPreviews.push(URL.createObjectURL(files[i]));
+                      }
+                      const updatedFiles = [...galleryFiles, ...newFiles];
+                      const updatedPreviews = [...galleryPreviews, ...newPreviews];
+                      setGalleryFiles(updatedFiles);
+                      setGalleryPreviews(updatedPreviews);
+                    }
+                  }}
+                />
+                <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
+                  {galleryPreviews.map((preview, index) => (
+                    <Box key={index} sx={{ position: "relative", display: "inline-block" }}>
+                      <img
+                        src={preview}
+                        alt={`Gallery Preview ${index + 1}`}
+                        style={{
+                          width: 150,
+                          height: 150,
+                          borderRadius: 8,
+                          objectFit: "cover",
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => removeGalleryImage(index)}
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          bgcolor: "rgba(255,255,255,0.7)",
+                        }}
+                        size="small"
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Box>
               </Grid>
 
               {/* Brochure URL */}
@@ -499,12 +728,7 @@ const EditProjectForm = () => {
             </Grid>
 
             <div className="flex justify-end mt-6">
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-              >
+              <Button type="submit" variant="contained" color="primary" size="large">
                 Update Project
               </Button>
             </div>

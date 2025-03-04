@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
       "example.com",
       "artgallery.yale.edu",
       "www.photocrati.com",
-      "localhost"
+      "localhost",
+      "145.223.23.134",
     ],  },
 
 };

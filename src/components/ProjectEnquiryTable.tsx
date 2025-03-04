@@ -10,8 +10,10 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
-import { fetchProjectEnquiry, deleteProjectEnquiry } from "@/api/ProjectEnquiry/page";
-import SnackbarComponent from "@/components/SnackbarComponent";
+import {
+  fetchProjectEnquiry,
+  deleteProjectEnquiry,
+} from "@/api/ProjectEnquiry/page";
 
 // Updated interface based on your API data
 interface ProjectEnquiry {
@@ -24,6 +26,7 @@ interface ProjectEnquiry {
   mobile: string;
   date: string;
   time: string;
+  projectName: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -40,18 +43,23 @@ interface ProjectEnquiryResponse {
 }
 
 const ProjectEnquiryTable: React.FC = () => {
-  const [projectEnquiries, setProjectEnquiries] = useState<ProjectEnquiry[]>([]);
+  const [projectEnquiries, setProjectEnquiries] = useState<ProjectEnquiry[]>(
+    []
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedEnquiryId, setSelectedEnquiryId] = useState<string | null>(null);
+  const [selectedEnquiryId, setSelectedEnquiryId] = useState<string | null>(
+    null
+  );
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-   const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
-    
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   useEffect(() => {
     const fetchEnquiriesData = async () => {
@@ -72,18 +80,12 @@ const ProjectEnquiryTable: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-8">
-        Loading...
-      </div>
+      <div className="flex justify-center items-center py-8">Loading...</div>
     );
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8 text-red-500">
-        Error: {error}
-      </div>
-    );
+    return <div className="text-center py-8 text-red-500">Error: {error}</div>;
   }
 
   const handleOpenDeleteDialog = (id: string) => {
@@ -107,7 +109,6 @@ const ProjectEnquiryTable: React.FC = () => {
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
 
-
       handleCloseDeleteDialog();
       window.location.reload();
     } catch (error) {
@@ -115,7 +116,6 @@ const ProjectEnquiryTable: React.FC = () => {
       setSnackbarMessage("Error deleting project");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
-      
     }
   };
 
@@ -133,6 +133,7 @@ const ProjectEnquiryTable: React.FC = () => {
     { header: "Mobile", accessor: "mobile", className: "px-4 py-2" },
     { header: "Date", accessor: "date", className: "px-4 py-2" },
     { header: "Time", accessor: "time", className: "px-4 py-2" },
+    { header: "Project Name", accessor: "projectName", className: "px-4 py-2" },
     { header: "Action", accessor: "action" },
   ];
 
@@ -149,6 +150,7 @@ const ProjectEnquiryTable: React.FC = () => {
       <td className="px-4 py-2">{enquiry.mobile}</td>
       <td className="px-4 py-2">{enquiry.date}</td>
       <td className="px-4 py-2">{enquiry.time}</td>
+      <td className="px-4 py-2">{enquiry.projectName}</td>
       <td>
         <div className="flex items-center gap-2">
           <button

@@ -1,33 +1,19 @@
 import { limit } from "@/lib/data"; 
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:4000/api/v1";
+const API_BASE_URL = "http://145.223.23.134:4000/api/v1";
 
 
-const getAccessToken = () => {
-  const match = document.cookie.match(/(^| )access-token=([^;]+)/);
-  return match ? match[2] : null;
-};
+
 
 export const fetchProjectEnquiry = async (page: number) => {
   try {
-
-    const token = getAccessToken();
-
-    // Check if the token exists in the cookies
-    if (!token) {
-      throw new Error("Access token not found in cookies");
-    }
-
 
     const response = await axios.get(`${API_BASE_URL}/enquiry`, {
       params: {
         page,
         limit: limit,
         category:'project',
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
