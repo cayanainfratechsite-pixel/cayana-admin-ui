@@ -1,7 +1,7 @@
 import { limit } from "@/lib/data";
 import axios from "axios";
 
-const API_BASE_URL = "http://145.223.23.134:4000/api/v1";
+const API_BASE_URL = "https://api.cayana.co.in/api/v1";
 
 export const fetchBlogs = async (page:number) => {
   try {

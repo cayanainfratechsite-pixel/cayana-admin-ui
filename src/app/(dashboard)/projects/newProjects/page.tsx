@@ -73,7 +73,7 @@ const AddProjectForm: React.FC = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get("http://145.223.23.134:4000/api/v1/amenity");
+        const response = await axios.get("https://api.cayana.co.in/api/v1/amenity");
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -200,7 +200,7 @@ const AddProjectForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://145.223.23.134:4000/api/v1/project/add", {
+      const response = await fetch("https://api.cayana.co.in/api/v1/project/add", {
         method: "POST",
         body: formDataPayload,
       });
