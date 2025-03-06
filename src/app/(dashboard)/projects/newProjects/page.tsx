@@ -47,15 +47,29 @@ const AddProjectForm: React.FC = () => {
   const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   // States for file objects and previews for Card, Cover, and Overview images
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [overviewImageFile, setOverviewImageFile] = useState<File | null>(null);
+  const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
   const [cardImagePreview, setCardImagePreview] = useState<string>("");
   const [coverImagePreview, setCoverImagePreview] = useState<string>("");
-  const [overviewImagePreview, setOverviewImagePreview] = useState<string>("");
+  const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
+    []
+  );
+
+
+  // New state declarations for brochure file
+const [brochureFile, setBrochureFile] = useState<File | null>(null);
+const [brochureFileName, setBrochureFileName] = useState<string>("");
+
+// New ref for brochure file input
+const brochureInputRef = useRef<HTMLInputElement>(null);
+
+
 
   // States for multiple Gallery Images file upload
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -73,7 +87,9 @@ const AddProjectForm: React.FC = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get("http://145.223.23.134:4000/api/v1/amenity");
+        const response = await axios.get(
+          "http://145.223.23.134:4000/api/v1/amenity"
+        );
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -87,6 +103,24 @@ const AddProjectForm: React.FC = () => {
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+
+  // Handler for selecting a brochure PDF
+const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+    setBrochureFile(file);
+    setBrochureFileName(file.name);
+  }
+};
+
+// Handler to remove the selected brochure file
+const removeBrochureFile = () => {
+  setBrochureFile(null);
+  setBrochureFileName("");
+};
+
+
 
   // File input handlers for Card Image
   const handleCardImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,19 +155,20 @@ const AddProjectForm: React.FC = () => {
   };
 
   // File input handlers for Overview Image
-  const handleOverviewImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setOverviewImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setOverviewImagePreview(previewUrl);
-      setFormData({ ...formData, overViewImage: previewUrl });
+  const handleOverviewImageSelect = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files);
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setOverviewImageFile(newFiles); // Replace existing files
+      setOverviewImagePreview(newPreviews); // Replace existing previews
     }
   };
-  const removeOverviewImage = () => {
-    setOverviewImageFile(null);
-    setOverviewImagePreview("");
-    setFormData({ ...formData, overViewImage: "" });
+  const removeOverviewImage = (index: number) => {
+    setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
+    setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
   };
 
   // File input handlers for multiple Gallery Images
@@ -178,10 +213,15 @@ const AddProjectForm: React.FC = () => {
     formDataPayload.append("overview", formData.overview);
     formDataPayload.append("details", formData.details);
     formDataPayload.append("locationEmbedURL", formData.locationEmbedURL);
-    formDataPayload.append("brochureURL", formData.brochureURL);
+    // formDataPayload.append("brochureURL", formData.brochureURL);
     // Append amenities as a JSON string
     formDataPayload.append("amenities", JSON.stringify(selectedAmenities));
+
+    if (brochureFile) {
+      formDataPayload.append("brochureURL", brochureFile);
+    }
     
+
     // Append file fields if a new file was selected
     if (cardImageFile) {
       formDataPayload.append("cardImage", cardImageFile);
@@ -190,7 +230,9 @@ const AddProjectForm: React.FC = () => {
       formDataPayload.append("coverImage", coverImageFile);
     }
     if (overviewImageFile) {
-      formDataPayload.append("overViewImage", overviewImageFile);
+      overviewImageFile.forEach((file, index) => {
+        formDataPayload.append("overViewImage", file);
+      });
     }
     // Append each gallery image file (if any)
     if (galleryFiles.length > 0) {
@@ -200,10 +242,13 @@ const AddProjectForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://145.223.23.134:4000/api/v1/project/add", {
-        method: "POST",
-        body: formDataPayload,
-      });
+      const response = await fetch(
+        "http://145.223.23.134:4000/api/v1/project/add",
+        {
+          method: "POST",
+          body: formDataPayload,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error adding project.");
@@ -260,7 +305,7 @@ const AddProjectForm: React.FC = () => {
                     >
                       <MenuItem value="completed">Completed</MenuItem>
                       <MenuItem value="ongoing">Ongoing</MenuItem>
-                      <MenuItem value="pending">Pending</MenuItem>
+                      <MenuItem value="upcoming">upcoming</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -299,14 +344,23 @@ const AddProjectForm: React.FC = () => {
                       id="card-image-upload"
                       ref={cardImageInputRef}
                     />
-                    <label htmlFor="card-image-upload" style={{ cursor: "pointer" }}>
+                    <label
+                      htmlFor="card-image-upload"
+                      style={{ cursor: "pointer" }}
+                    >
                       <Typography variant="body2" color="textSecondary">
                         Click to select card image
                       </Typography>
                     </label>
                   </Box>
                   {cardImagePreview && (
-                    <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        position: "relative",
+                        display: "inline-block",
+                      }}
+                    >
                       <img
                         src={cardImagePreview}
                         alt="Card Image Preview"
@@ -362,13 +416,14 @@ const AddProjectForm: React.FC = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Bedrooms"
+                    label="Bedrooms / Price"
                     name="bedRooms"
-                    type="number"
+                    type="text"
                     value={formData.bedRooms}
                     onChange={handleChange}
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
@@ -426,14 +481,23 @@ const AddProjectForm: React.FC = () => {
                       id="cover-image-upload"
                       ref={coverImageInputRef}
                     />
-                    <label htmlFor="cover-image-upload" style={{ cursor: "pointer" }}>
+                    <label
+                      htmlFor="cover-image-upload"
+                      style={{ cursor: "pointer" }}
+                    >
                       <Typography variant="body2" color="textSecondary">
                         Click to select cover image
                       </Typography>
                     </label>
                   </Box>
                   {coverImagePreview && (
-                    <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        position: "relative",
+                        display: "inline-block",
+                      }}
+                    >
                       <img
                         src={coverImagePreview}
                         alt="Cover Image Preview"
@@ -476,7 +540,7 @@ const AddProjectForm: React.FC = () => {
                 {/* Floor Image File Upload */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Floor Image
+                    Floor Structure Images
                   </Typography>
                   <Box
                     sx={{
@@ -490,40 +554,53 @@ const AddProjectForm: React.FC = () => {
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={handleOverviewImageSelect}
                       style={{ display: "none" }}
                       id="overview-image-upload"
                       ref={overviewImageInputRef}
                     />
-                    <label htmlFor="overview-image-upload" style={{ cursor: "pointer" }}>
+                    <label
+                      htmlFor="overview-image-upload"
+                      style={{ cursor: "pointer" }}
+                    >
                       <Typography variant="body2" color="textSecondary">
-                        Click to select floor image
+                        Click to select Floor Structure images
                       </Typography>
                     </label>
                   </Box>
-                  {overviewImagePreview && (
-                    <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
-                      <img
-                        src={overviewImagePreview}
-                        alt="Overview Image Preview"
-                        style={{
-                          width: "100%",
-                          maxWidth: 150,
-                          borderRadius: 8,
-                        }}
-                      />
-                      <IconButton
-                        onClick={removeOverviewImage}
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          bgcolor: "rgba(255,255,255,0.7)",
-                        }}
-                        size="small"
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
+                  {overviewImagePreview.length > 0 && (
+                    <Box
+                      sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}
+                    >
+                      {overviewImagePreview.map((preview, index) => (
+                        <Box
+                          key={index}
+                          sx={{ position: "relative", display: "inline-block" }}
+                        >
+                          <img
+                            src={preview}
+                            alt={`Overview Image Preview ${index + 1}`}
+                            style={{
+                              width: "100%",
+                              maxWidth: 150,
+                              borderRadius: 8,
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => removeOverviewImage(index)}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              bgcolor: "rgba(255,255,255,0.7)",
+                            }}
+                            size="small"
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      ))}
                     </Box>
                   )}
                 </Grid>
@@ -612,7 +689,10 @@ const AddProjectForm: React.FC = () => {
                   <Typography variant="h6" className="mb-2">
                     Gallery Images
                   </Typography>
-                  <Button variant="outlined" onClick={() => galleryInputRef.current?.click()}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => galleryInputRef.current?.click()}
+                  >
                     Upload Gallery Images
                   </Button>
                   <input
@@ -623,9 +703,14 @@ const AddProjectForm: React.FC = () => {
                     style={{ display: "none" }}
                     onChange={handleGalleryFilesSelect}
                   />
-                  <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
+                  <Box
+                    sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}
+                  >
                     {galleryPreviews.map((preview, index) => (
-                      <Box key={index} sx={{ position: "relative", display: "inline-block" }}>
+                      <Box
+                        key={index}
+                        sx={{ position: "relative", display: "inline-block" }}
+                      >
                         <img
                           src={preview}
                           alt={`Gallery Preview ${index + 1}`}
@@ -654,20 +739,58 @@ const AddProjectForm: React.FC = () => {
                 </Grid>
 
                 {/* Brochure URL */}
+
                 <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Brochure URL"
-                    name="brochureURL"
-                    value={formData.brochureURL}
-                    onChange={handleChange}
-                  />
-                </Grid>
+  <Typography variant="subtitle1" gutterBottom>
+    Brochure PDF
+  </Typography>
+  <Box
+    sx={{
+      border: "2px dashed #ccc",
+      borderRadius: 2,
+      p: 2,
+      textAlign: "center",
+      cursor: "pointer",
+    }}
+  >
+    <input
+      type="file"
+      accept="application/pdf"
+      onChange={handleBrochureFileSelect}
+      style={{ display: "none" }}
+      id="brochure-file-upload"
+      ref={brochureInputRef}
+    />
+    <label htmlFor="brochure-file-upload" style={{ cursor: "pointer" }}>
+      <Typography variant="body2" color="textSecondary">
+        Click to select Brochure PDF
+      </Typography>
+    </label>
+  </Box>
+  {brochureFile && (
+    <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+      <Typography variant="body2">{brochureFileName}</Typography>
+      <IconButton
+        onClick={removeBrochureFile}
+        sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
+        size="small"
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Box>
+  )}
+</Grid>
+
+                
               </Grid>
 
               <div className="flex justify-end mt-6">
-                <Button type="submit" variant="contained" color="primary" size="large">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
                   Add Project
                 </Button>
               </div>

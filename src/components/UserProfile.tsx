@@ -17,7 +17,7 @@ const UserProfile: React.FC = () => {
 
   const handleLogout = () => {
     Cookies.remove("access-token");
-    router.push("/login");
+    router.push("/");
   };
 
   return (

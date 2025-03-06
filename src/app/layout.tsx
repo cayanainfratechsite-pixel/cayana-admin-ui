@@ -4,12 +4,12 @@ import "./globals.css";
 
 const mavenPro = Maven_Pro({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // Add font weights
+  weight: ["400", "500", "600", "700"], 
 });
 
 export const metadata: Metadata = {
-  title: "Admin Panel",
-  description: "Admin Dashboard using Next.js & Tailwind CSS",
+  title: "Cayana Admin Panel",
+  description: "Cayana Admin Panel",
 };
 
 export default function RootLayout({
@@ -19,6 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Directly reference the image from the public folder */}
+        <link rel="icon" href="/images/CAYANA.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/CAYANA.png" />
+      </head>
+
       <body className={`${mavenPro.className} `}>
         {children}
       </body>

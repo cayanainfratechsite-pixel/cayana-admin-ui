@@ -55,15 +55,31 @@ const EditProjectForm: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   // File objects and preview states for image fields.
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [overviewImageFile, setOverviewImageFile] = useState<File | null>(null);
+  const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
   const [cardImagePreview, setCardImagePreview] = useState<string>("");
   const [coverImagePreview, setCoverImagePreview] = useState<string>("");
-  const [overviewImagePreview, setOverviewImagePreview] = useState<string>("");
+  const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
+    []
+  );
+
+
+
+    // New state declarations for brochure file
+  const [brochureFile, setBrochureFile] = useState<File | null>(null);
+  const [brochureFileName, setBrochureFileName] = useState<string>("");
+  
+  // New ref for brochure file input
+  const brochureInputRef = useRef<HTMLInputElement>(null);
+  
+
+
 
   // Gallery images: we'll store files and their preview URLs.
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -79,7 +95,9 @@ const EditProjectForm: React.FC = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get("http://145.223.23.134:4000/api/v1/amenity");
+        const response = await axios.get(
+          "http://145.223.23.134:4000/api/v1/amenity"
+        );
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -93,7 +111,9 @@ const EditProjectForm: React.FC = () => {
     if (!id) return;
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`http://145.223.23.134:4000/api/v1/project/${id}`);
+        const response = await axios.get(
+          `http://145.223.23.134:4000/api/v1/project/${id}`
+        );
         const project = response.data.result;
         setFormData({
           status: project.status || "completed",
@@ -114,7 +134,6 @@ const EditProjectForm: React.FC = () => {
           brochureURL: project.brochureURL || "",
         });
         setSelectedAmenities(project.amenities || []);
-        // Prepopulate image previews with the current image URLs.
         setCardImagePreview(project.cardImage || "");
         setCoverImagePreview(project.coverImage || "");
         setOverviewImagePreview(project.overViewImage || "");
@@ -163,17 +182,21 @@ const EditProjectForm: React.FC = () => {
   };
 
   // --- File input handlers for Overview Image ---
-  const handleOverviewImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setOverviewImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setOverviewImagePreview(previewUrl);
+  const handleOverviewImageSelect = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files);
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setOverviewImageFile(newFiles); // Replace existing files
+      setOverviewImagePreview(newPreviews); // Replace existing previews
     }
   };
-  const removeOverviewImage = () => {
-    setOverviewImageFile(null);
-    setOverviewImagePreview("");
+
+  const removeOverviewImage = (index: number) => {
+    setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
+    setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
   };
 
   // --- File input handlers for Gallery Images ---
@@ -201,6 +224,21 @@ const EditProjectForm: React.FC = () => {
     setGalleryPreviews(updatedPreviews);
   };
 
+
+  const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setBrochureFile(file);
+      setBrochureFileName(file.name);
+    }
+  };
+  
+  const removeBrochureFile = () => {
+    setBrochureFile(null);
+    setBrochureFileName("");
+  };
+  
+
   // --- Handle form submission ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -217,20 +255,28 @@ const EditProjectForm: React.FC = () => {
     formDataPayload.append("overview", formData.overview);
     formDataPayload.append("details", formData.details);
     formDataPayload.append("locationEmbedURL", formData.locationEmbedURL);
-    formDataPayload.append("brochureURL", formData.brochureURL);
+    // formDataPayload.append("brochureURL", formData.brochureURL);
     // Append amenities as double-stringified JSON.
     formDataPayload.append(
       "amenities",
       JSON.stringify(
-        JSON.stringify(
-          selectedAmenities.map((amenity: any) => ({
-            name: amenity.name,
-            icon: amenity.icon,
-          }))
-        )
+        selectedAmenities.map((amenity: any) => ({
+          name: amenity.name,
+          icon: amenity.icon,
+        }))
       )
     );
+
+    if (brochureFile) {
+      formDataPayload.append("brochureURL", brochureFile);
+    }
+
+    
+
     // Append file fields if a new file was selected.
+
+
+
     if (cardImageFile) {
       formDataPayload.append("cardImage", cardImageFile);
     }
@@ -238,7 +284,9 @@ const EditProjectForm: React.FC = () => {
       formDataPayload.append("coverImage", coverImageFile);
     }
     if (overviewImageFile) {
-      formDataPayload.append("overViewImage", overviewImageFile);
+      overviewImageFile.forEach((file) => {
+        formDataPayload.append("overViewImage", file);
+      });
     }
     // Append each gallery file if any.
     if (galleryFiles.length > 0) {
@@ -248,10 +296,13 @@ const EditProjectForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://145.223.23.134:4000/api/v1/project/edit/${id}`, {
-        method: "PUT",
-        body: formDataPayload,
-      });
+      const response = await fetch(
+        `http://145.223.23.134:4000/api/v1/project/edit/${id}`,
+        {
+          method: "PUT",
+          body: formDataPayload,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error editing project.");
@@ -305,7 +356,7 @@ const EditProjectForm: React.FC = () => {
                   >
                     <MenuItem value="completed">Completed</MenuItem>
                     <MenuItem value="ongoing">Ongoing</MenuItem>
-                    <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="upcoming">Upcoming</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -344,14 +395,23 @@ const EditProjectForm: React.FC = () => {
                     id="card-image-upload"
                     ref={cardImageInputRef}
                   />
-                  <label htmlFor="card-image-upload" style={{ cursor: "pointer" }}>
+                  <label
+                    htmlFor="card-image-upload"
+                    style={{ cursor: "pointer" }}
+                  >
                     <Typography variant="body2" color="textSecondary">
                       Click to select card image
                     </Typography>
                   </label>
                 </Box>
                 {cardImagePreview && (
-                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      position: "relative",
+                      display: "inline-block",
+                    }}
+                  >
                     <img
                       src={cardImagePreview}
                       alt="Card Image Preview"
@@ -407,9 +467,9 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Bedrooms"
+                  label="Bedrooms / Price"
                   name="bedRooms"
-                  type="number"
+                  type="text"
                   value={formData.bedRooms}
                   onChange={handleChange}
                 />
@@ -471,14 +531,23 @@ const EditProjectForm: React.FC = () => {
                     id="cover-image-upload"
                     ref={coverImageInputRef}
                   />
-                  <label htmlFor="cover-image-upload" style={{ cursor: "pointer" }}>
+                  <label
+                    htmlFor="cover-image-upload"
+                    style={{ cursor: "pointer" }}
+                  >
                     <Typography variant="body2" color="textSecondary">
                       Click to select cover image
                     </Typography>
                   </label>
                 </Box>
                 {coverImagePreview && (
-                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      position: "relative",
+                      display: "inline-block",
+                    }}
+                  >
                     <img
                       src={coverImagePreview}
                       alt="Cover Image Preview"
@@ -521,7 +590,7 @@ const EditProjectForm: React.FC = () => {
               {/* Overview Image Upload */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Floor Image
+                  Floor Structure
                 </Typography>
                 <Box
                   sx={{
@@ -531,44 +600,58 @@ const EditProjectForm: React.FC = () => {
                     textAlign: "center",
                     cursor: "pointer",
                   }}
+                  onClick={() => overviewImageInputRef.current?.click()}
                 >
                   <input
                     type="file"
                     accept="image/*"
+                    multiple
                     onChange={handleOverviewImageSelect}
                     style={{ display: "none" }}
                     id="overview-image-upload"
                     ref={overviewImageInputRef}
                   />
-                  <label htmlFor="overview-image-upload" style={{ cursor: "pointer" }}>
+                  <label
+                    htmlFor="overview-image-upload"
+                    style={{ cursor: "pointer" }}
+                  >
                     <Typography variant="body2" color="textSecondary">
-                      Click to select floor image
+                      Click to select Floor Structure images
                     </Typography>
                   </label>
                 </Box>
-                {overviewImagePreview && (
-                  <Box sx={{ mt: 2, position: "relative", display: "inline-block" }}>
-                    <img
-                      src={overviewImagePreview}
-                      alt="Overview Image Preview"
-                      style={{
-                        width: "100%",
-                        maxWidth: 150,
-                        borderRadius: 8,
-                      }}
-                    />
-                    <IconButton
-                      onClick={removeOverviewImage}
-                      sx={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        bgcolor: "rgba(255,255,255,0.7)",
-                      }}
-                      size="small"
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
+                {overviewImagePreview.length > 0 && (
+                  <Box
+                    sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}
+                  >
+                    {overviewImagePreview.map((preview, index) => (
+                      <Box
+                        key={index}
+                        sx={{ position: "relative", display: "inline-block" }}
+                      >
+                        <img
+                          src={preview}
+                          alt={`Overview Image Preview ${index + 1}`}
+                          style={{
+                            width: "100%",
+                            maxWidth: 150,
+                            borderRadius: 8,
+                          }}
+                        />
+                        <IconButton
+                          onClick={() => removeOverviewImage(index)}
+                          sx={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            bgcolor: "rgba(255,255,255,0.7)",
+                          }}
+                          size="small"
+                        >
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    ))}
                   </Box>
                 )}
               </Grid>
@@ -658,7 +741,10 @@ const EditProjectForm: React.FC = () => {
                 <Typography variant="h6" className="mb-2">
                   Gallery Images
                 </Typography>
-                <Button variant="outlined" onClick={() => galleryInputRef.current?.click()}>
+                <Button
+                  variant="outlined"
+                  onClick={() => galleryInputRef.current?.click()}
+                >
                   Upload Gallery Images
                 </Button>
                 <input
@@ -677,7 +763,10 @@ const EditProjectForm: React.FC = () => {
                         newPreviews.push(URL.createObjectURL(files[i]));
                       }
                       const updatedFiles = [...galleryFiles, ...newFiles];
-                      const updatedPreviews = [...galleryPreviews, ...newPreviews];
+                      const updatedPreviews = [
+                        ...galleryPreviews,
+                        ...newPreviews,
+                      ];
                       setGalleryFiles(updatedFiles);
                       setGalleryPreviews(updatedPreviews);
                     }
@@ -685,7 +774,10 @@ const EditProjectForm: React.FC = () => {
                 />
                 <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
                   {galleryPreviews.map((preview, index) => (
-                    <Box key={index} sx={{ position: "relative", display: "inline-block" }}>
+                    <Box
+                      key={index}
+                      sx={{ position: "relative", display: "inline-block" }}
+                    >
                       <img
                         src={preview}
                         alt={`Gallery Preview ${index + 1}`}
@@ -715,19 +807,71 @@ const EditProjectForm: React.FC = () => {
 
               {/* Brochure URL */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Brochure URL"
-                  name="brochureURL"
-                  value={formData.brochureURL}
-                  onChange={handleChange}
-                />
-              </Grid>
+  <Typography variant="subtitle1" gutterBottom>
+    Brochure PDF
+  </Typography>
+  <Box
+    sx={{
+      border: "2px dashed #ccc",
+      borderRadius: 2,
+      p: 2,
+      textAlign: "center",
+      cursor: "pointer",
+    }}
+  >
+    <input
+      type="file"
+      accept="application/pdf"
+      onChange={handleBrochureFileSelect}
+      style={{ display: "none" }}
+      id="brochure-file-upload"
+      ref={brochureInputRef}
+    />
+    <label htmlFor="brochure-file-upload" style={{ cursor: "pointer" }}>
+      <Typography variant="body2" color="textSecondary">
+        Click to select Brochure PDF
+      </Typography>
+    </label>
+  </Box>
+  {brochureFile && (
+    <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+      <Typography variant="body2">{brochureFileName}</Typography>
+      <IconButton
+        onClick={removeBrochureFile}
+        sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
+        size="small"
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Box>
+  )}
+  {(formData.brochureURL || brochureFile) && (
+    <Button
+      variant="outlined"
+      onClick={() => {
+        if (brochureFile) {
+          const pdfUrl = URL.createObjectURL(brochureFile);
+          window.open(pdfUrl, "_blank");
+        } else if (formData.brochureURL) {
+          window.open(formData.brochureURL, "_blank");
+        }
+      }}
+      sx={{ mt: 2 }}
+    >
+      View Brochure PDF
+    </Button>
+  )}
+</Grid>
+
             </Grid>
 
             <div className="flex justify-end mt-6">
-              <Button type="submit" variant="contained" color="primary" size="large">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                size="large"
+              >
                 Update Project
               </Button>
             </div>
