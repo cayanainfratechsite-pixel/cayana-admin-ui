@@ -14,7 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/navigation";
 import TextEditor from "@/components/TextEditor";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { publishBlog } from "@/api/Blogs/page";
+import { publishBlog } from "@/api/blogs/page";
 
 const NewBlogPage: React.FC = () => {
   // Store file objects for images

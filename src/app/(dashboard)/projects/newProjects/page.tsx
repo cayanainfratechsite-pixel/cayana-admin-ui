@@ -87,9 +87,7 @@ const brochureInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get(
-          "http://145.223.23.134:4000/api/v1/amenity"
-        );
+        const response = await axios.get("https://api.cayana.co.in/api/v1/amenity");
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -242,13 +240,10 @@ const removeBrochureFile = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://145.223.23.134:4000/api/v1/project/add",
-        {
-          method: "POST",
-          body: formDataPayload,
-        }
-      );
+      const response = await fetch("https://api.cayana.co.in/api/v1/project/add", {
+        method: "POST",
+        body: formDataPayload,
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error adding project.");

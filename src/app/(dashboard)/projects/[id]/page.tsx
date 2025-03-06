@@ -95,9 +95,7 @@ const EditProjectForm: React.FC = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get(
-          "http://145.223.23.134:4000/api/v1/amenity"
-        );
+        const response = await axios.get("https://api.cayana.co.in/api/v1/amenity");
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -111,9 +109,7 @@ const EditProjectForm: React.FC = () => {
     if (!id) return;
     const fetchProject = async () => {
       try {
-        const response = await axios.get(
-          `http://145.223.23.134:4000/api/v1/project/${id}`
-        );
+        const response = await axios.get(`https://api.cayana.co.in/api/v1/project/${id}`);
         const project = response.data.result;
         setFormData({
           status: project.status || "completed",
@@ -296,13 +292,10 @@ const EditProjectForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://145.223.23.134:4000/api/v1/project/edit/${id}`,
-        {
-          method: "PUT",
-          body: formDataPayload,
-        }
-      );
+      const response = await fetch(`https://api.cayana.co.in/api/v1/project/edit/${id}`, {
+        method: "PUT",
+        body: formDataPayload,
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error editing project.");

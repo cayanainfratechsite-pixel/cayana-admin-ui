@@ -3,22 +3,34 @@ import React from "react";
 import Button from "@/components/Button";
 import ApplicationsTable from "@/components/ApplicationsTable";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { downloadAppliedJobs } from "@/api/Applications/page";
+import { downloadAppliedJobs } from "@/api/applications/page";
 
 const ApplicationPage: React.FC = () => {
   const handleDownload = async () => {
     try {
       const data = await downloadAppliedJobs();
-      
+
       // Check if the API response indicates success.
       if (data.success === 0) {
-        // Create a temporary anchor element and trigger the download.
-        const link = document.createElement("a");
-        link.href = data.result;
-        link.download = "Applications.xlsx";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Fetch the file as a blob to handle binary data properly.
+        fetch(data.result, {
+          method: 'GET',
+        })
+          .then(response => response.blob())
+          .then(blob => {
+            // Create a temporary URL for the blob.
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "Applications.xlsx";  // Set the filename for download.
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Revoke the blob URL to free memory.
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(error => console.error("Download failed:", error));
       } else {
         console.error("Failed to download file: ", data.message);
       }

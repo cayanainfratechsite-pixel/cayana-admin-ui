@@ -3,7 +3,7 @@ import React from "react";
 import Button from "@/components/Button";
 import ContactEnquiryTable from "@/components/ContactEnquiryTable";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { downloadContactEnquiry } from "@/api/Contact/page";
+import { downloadContactEnquiry } from "@/api/contact/page";
 
 const ContactEnquiryPage: React.FC = () => {
   const handleDownload = async () => {
