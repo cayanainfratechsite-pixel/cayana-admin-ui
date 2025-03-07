@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Directly reference the image from the public folder */}
-        <link rel="icon" href="/images/CAYANA.png" />
+        <link rel="icon" href="/images/fav.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/images/CAYANA.png" />
       </head>
 
