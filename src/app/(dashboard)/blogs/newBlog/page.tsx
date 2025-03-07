@@ -142,7 +142,9 @@ const NewBlogPage: React.FC = () => {
             {/* Card Image File Upload */}
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" gutterBottom>
-                Card Image
+                Card Image <span className="text-xs text-zinc-600">
+                (Image dimensions: 708 × 531 px)
+              </span>
               </Typography>
               <Box
                 sx={{
@@ -192,8 +194,12 @@ const NewBlogPage: React.FC = () => {
             {/* Cover Image File Upload */}
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" gutterBottom>
-                Cover Image
+                Cover Image <span className="text-xs text-zinc-600">
+                (Image dimensions: 3840 × 2160 px)
+              </span>
               </Typography>
+
+              
 
               
               <Box

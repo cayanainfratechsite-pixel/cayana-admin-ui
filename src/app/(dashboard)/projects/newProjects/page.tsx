@@ -61,15 +61,12 @@ const AddProjectForm: React.FC = () => {
     []
   );
 
-
   // New state declarations for brochure file
-const [brochureFile, setBrochureFile] = useState<File | null>(null);
-const [brochureFileName, setBrochureFileName] = useState<string>("");
+  const [brochureFile, setBrochureFile] = useState<File | null>(null);
+  const [brochureFileName, setBrochureFileName] = useState<string>("");
 
-// New ref for brochure file input
-const brochureInputRef = useRef<HTMLInputElement>(null);
-
-
+  // New ref for brochure file input
+  const brochureInputRef = useRef<HTMLInputElement>(null);
 
   // States for multiple Gallery Images file upload
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -87,7 +84,9 @@ const brochureInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get("https://api.cayana.co.in/api/v1/amenity");
+        const response = await axios.get(
+          "https://api.cayana.co.in/api/v1/amenity"
+        );
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -102,23 +101,20 @@ const brochureInputRef = useRef<HTMLInputElement>(null);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   // Handler for selecting a brochure PDF
-const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files[0]) {
-    const file = e.target.files[0];
-    setBrochureFile(file);
-    setBrochureFileName(file.name);
-  }
-};
+  const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setBrochureFile(file);
+      setBrochureFileName(file.name);
+    }
+  };
 
-// Handler to remove the selected brochure file
-const removeBrochureFile = () => {
-  setBrochureFile(null);
-  setBrochureFileName("");
-};
-
-
+  // Handler to remove the selected brochure file
+  const removeBrochureFile = () => {
+    setBrochureFile(null);
+    setBrochureFileName("");
+  };
 
   // File input handlers for Card Image
   const handleCardImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,7 +214,6 @@ const removeBrochureFile = () => {
     if (brochureFile) {
       formDataPayload.append("brochureURL", brochureFile);
     }
-    
 
     // Append file fields if a new file was selected
     if (cardImageFile) {
@@ -240,10 +235,13 @@ const removeBrochureFile = () => {
     }
 
     try {
-      const response = await fetch("https://api.cayana.co.in/api/v1/project/add", {
-        method: "POST",
-        body: formDataPayload,
-      });
+      const response = await fetch(
+        "https://api.cayana.co.in/api/v1/project/add",
+        {
+          method: "POST",
+          body: formDataPayload,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error adding project.");
@@ -278,7 +276,9 @@ const removeBrochureFile = () => {
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
           <div className="flex-1">
             <h2 className="text-xl font-semibold text-gray-800">
-              Add New Projects
+              Add New Projects {" "} <span className="text-xs text-zinc-600">
+                (Maximum size limit 50MB)
+              </span>
             </h2>
           </div>
         </div>
@@ -320,7 +320,9 @@ const removeBrochureFile = () => {
                 {/* Card Image File Upload */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Card Image
+                    Card Image <span className="text-xs text-zinc-600">
+                      (Image dimensions: 1200x650)
+                    </span>
                   </Typography>
                   <Box
                     sx={{
@@ -411,7 +413,7 @@ const removeBrochureFile = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Bedrooms / Price"
+                    label="Size"
                     name="bedRooms"
                     type="text"
                     value={formData.bedRooms}
@@ -423,9 +425,9 @@ const removeBrochureFile = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Size (sq ft)"
+                    label="Category"
                     name="size"
-                    type="number"
+                    type="string"
                     value={formData.size}
                     onChange={handleChange}
                   />
@@ -457,7 +459,10 @@ const removeBrochureFile = () => {
                 {/* Cover Image File Upload */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Cover Image
+                    Cover Image{" "}
+                    <span className="text-xs text-zinc-600">
+                      (Image dimensions: 1920 x 1080)
+                    </span>
                   </Typography>
                   <Box
                     sx={{
@@ -535,7 +540,10 @@ const removeBrochureFile = () => {
                 {/* Floor Image File Upload */}
                 <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Floor Structure Images
+                    Floor Structure Images{" "}
+                    <span className="text-xs text-zinc-600">
+                      (Image dimensions: 1080x700)
+                    </span>
                   </Typography>
                   <Box
                     sx={{
@@ -682,7 +690,9 @@ const removeBrochureFile = () => {
                 {/* Gallery Images Upload */}
                 <Grid item xs={12}>
                   <Typography variant="h6" className="mb-2">
-                    Gallery Images
+                    Gallery Images <span className="text-xs text-zinc-600">
+                      (Image dimensions: 1080x700)
+                    </span>
                   </Typography>
                   <Button
                     variant="outlined"
@@ -736,47 +746,50 @@ const removeBrochureFile = () => {
                 {/* Brochure URL */}
 
                 <Grid item xs={12}>
-  <Typography variant="subtitle1" gutterBottom>
-    Brochure PDF
-  </Typography>
-  <Box
-    sx={{
-      border: "2px dashed #ccc",
-      borderRadius: 2,
-      p: 2,
-      textAlign: "center",
-      cursor: "pointer",
-    }}
-  >
-    <input
-      type="file"
-      accept="application/pdf"
-      onChange={handleBrochureFileSelect}
-      style={{ display: "none" }}
-      id="brochure-file-upload"
-      ref={brochureInputRef}
-    />
-    <label htmlFor="brochure-file-upload" style={{ cursor: "pointer" }}>
-      <Typography variant="body2" color="textSecondary">
-        Click to select Brochure PDF
-      </Typography>
-    </label>
-  </Box>
-  {brochureFile && (
-    <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
-      <Typography variant="body2">{brochureFileName}</Typography>
-      <IconButton
-        onClick={removeBrochureFile}
-        sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
-        size="small"
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </Box>
-  )}
-</Grid>
-
-                
+                  <Typography variant="subtitle1" gutterBottom>
+                    Brochure PDF
+                  </Typography>
+                  <Box
+                    sx={{
+                      border: "2px dashed #ccc",
+                      borderRadius: 2,
+                      p: 2,
+                      textAlign: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={handleBrochureFileSelect}
+                      style={{ display: "none" }}
+                      id="brochure-file-upload"
+                      ref={brochureInputRef}
+                    />
+                    <label
+                      htmlFor="brochure-file-upload"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <Typography variant="body2" color="textSecondary">
+                        Click to select Brochure PDF
+                      </Typography>
+                    </label>
+                  </Box>
+                  {brochureFile && (
+                    <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+                      <Typography variant="body2">
+                        {brochureFileName}
+                      </Typography>
+                      <IconButton
+                        onClick={removeBrochureFile}
+                        sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
+                        size="small"
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  )}
+                </Grid>
               </Grid>
 
               <div className="flex justify-end mt-6">

@@ -11,44 +11,44 @@ const menuItems = [
     title: "MENU",
     items: [
       {
-        icon: "/employees.png",
+        icon: "/images/icons/Projects.png",
         label: "Projects",
         href: "/projects",
         visible: ["ADMIN"],
       },
       {
-        icon: "/booking.png",
+        icon: "/images/icons/Blogs.png",
         label: "Blog",
         href: "/blogs",
         visible: ["ADMIN"],
       },
 
       {
-        icon: "/Delivered.png",
+        icon: "/images/icons/ContactUs.png",
         label: "Job Posts",
         href: "/jobPosts",
         visible: ["ADMIN"],
       },
       {
-        icon: "/Delivered.png",
+        icon: "/images/icons/Applications.png",
         label: "Applications",
         href: "/applications",
         visible: ["ADMIN"],
       },
       {
-        icon: "/Delivered.png",
+        icon: "/images/icons/Gallery.png",
         label: "Gallery",
         href: "/gallery",
         visible: ["ADMIN"],
       },
       {
-        icon: "/Delivered.png",
+        icon: "/images/icons/ProjectEnquiry.png",
         label: "Project Enquiry",
         href: "/projectEnquiry",
         visible: ["ADMIN"],
       },
       {
-        icon: "/Delivered.png",
+        icon: "/images/icons/ContactUs.png",
         label: "Contact",
         href: "/contact",
         visible: ["ADMIN"],
@@ -78,7 +78,7 @@ const Menu = () => {
                     item.href
                   )} hover:text-black`}
                 >
-                  {/* <Image
+                   <Image
                     src={item.icon}
                     alt="Icons By CAYANA"
                     width={20}
@@ -86,7 +86,7 @@ const Menu = () => {
                     className={`transition-colors duration-300 filter invert group-hover:filter-none ${isActive(
                       item.href
                     ) && "invert-0"}`}
-                  /> */}
+                  /> 
                   <span className="hidden lg:block hover:text-black">
                     {item.label}
                   </span>

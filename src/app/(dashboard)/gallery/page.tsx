@@ -36,7 +36,9 @@ const GalleryPage = () => {
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   // State for multiple image upload
   const [isUploading, setIsUploading] = useState(false);
@@ -49,7 +51,9 @@ const GalleryPage = () => {
         const data = await fetchGallery();
         setGallery(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        setError(
+          err instanceof Error ? err.message : "An unexpected error occurred"
+        );
       } finally {
         setLoading(false);
       }
@@ -72,7 +76,7 @@ const GalleryPage = () => {
     if (!selectedId) return;
     try {
       await deleteImage(selectedId);
-      setGallery(prev => prev.filter(item => item._id !== selectedId));
+      setGallery((prev) => prev.filter((item) => item._id !== selectedId));
       setSnackbarMessage("Image deleted successfully!");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -104,18 +108,17 @@ const GalleryPage = () => {
       }
       try {
         setIsUploading(true);
-        const uploaded = await uploadImages(
-          formData,
-          (progressEvent) => {
-            if (progressEvent.total) {
-              const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              setUploadProgress(percent);
-            }
+        const uploaded = await uploadImages(formData, (progressEvent) => {
+          if (progressEvent.total) {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percent);
           }
-        );
+        });
         // Ensure uploaded is iterable
         const uploadedImages = Array.isArray(uploaded) ? uploaded : [uploaded];
-        setGallery(prev => [...prev, ...uploadedImages]);
+        setGallery((prev) => [...prev, ...uploadedImages]);
         setSnackbarMessage("Images uploaded successfully!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
@@ -150,9 +153,14 @@ const GalleryPage = () => {
 
       <div className="w-full lg:w-full flex flex-col gap-8">
         <Box className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
-          <Typography variant="h5" className="text-xl font-semibold text-gray-800">
-            Gallery Page
-          </Typography>
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Gallery Page{" "}
+              <span className="text-xs text-zinc-600">
+                (Image dimensions: 1080x700)
+              </span>
+            </h2>
+          </div>
           <div className="ml-4">
             <Button
               text="Upload Images"

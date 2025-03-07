@@ -44,7 +44,7 @@ const ApplicationPage: React.FC = () => {
       <div className="w-full lg:w-full flex flex-col gap-8">
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
           <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-800">Job Post List</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Applications Enquiry List</h2>
           </div>
           <div className="ml-4">
             <Button

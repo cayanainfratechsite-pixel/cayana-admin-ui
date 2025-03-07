@@ -69,17 +69,12 @@ const EditProjectForm: React.FC = () => {
     []
   );
 
-
-
-    // New state declarations for brochure file
+  // New state declarations for brochure file
   const [brochureFile, setBrochureFile] = useState<File | null>(null);
   const [brochureFileName, setBrochureFileName] = useState<string>("");
-  
+
   // New ref for brochure file input
   const brochureInputRef = useRef<HTMLInputElement>(null);
-  
-
-
 
   // Gallery images: we'll store files and their preview URLs.
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -95,7 +90,9 @@ const EditProjectForm: React.FC = () => {
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
-        const response = await axios.get("https://api.cayana.co.in/api/v1/amenity");
+        const response = await axios.get(
+          "https://api.cayana.co.in/api/v1/amenity"
+        );
         setAmenitiesOptions(response.data.result);
       } catch (error) {
         console.error("Error fetching amenities:", error);
@@ -109,7 +106,9 @@ const EditProjectForm: React.FC = () => {
     if (!id) return;
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`https://api.cayana.co.in/api/v1/project/${id}`);
+        const response = await axios.get(
+          `https://api.cayana.co.in/api/v1/project/${id}`
+        );
         const project = response.data.result;
         setFormData({
           status: project.status || "completed",
@@ -220,7 +219,6 @@ const EditProjectForm: React.FC = () => {
     setGalleryPreviews(updatedPreviews);
   };
 
-
   const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -228,12 +226,11 @@ const EditProjectForm: React.FC = () => {
       setBrochureFileName(file.name);
     }
   };
-  
+
   const removeBrochureFile = () => {
     setBrochureFile(null);
     setBrochureFileName("");
   };
-  
 
   // --- Handle form submission ---
   const handleSubmit = async (e: React.FormEvent) => {
@@ -267,11 +264,7 @@ const EditProjectForm: React.FC = () => {
       formDataPayload.append("brochureURL", brochureFile);
     }
 
-    
-
     // Append file fields if a new file was selected.
-
-
 
     if (cardImageFile) {
       formDataPayload.append("cardImage", cardImageFile);
@@ -292,10 +285,13 @@ const EditProjectForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://api.cayana.co.in/api/v1/project/edit/${id}`, {
-        method: "PUT",
-        body: formDataPayload,
-      });
+      const response = await fetch(
+        `https://api.cayana.co.in/api/v1/project/edit/${id}`,
+        {
+          method: "PUT",
+          body: formDataPayload,
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error editing project.");
@@ -330,8 +326,18 @@ const EditProjectForm: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col gap-4">
+
+<div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+          <div className="flex-1">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Edit Project {" "} <span className="text-xs text-zinc-600">
+                (Maximum size limit 50MB)
+              </span>
+            </h2>
+          </div>
+        </div>
       <Card className="shadow-lg">
-        <CardHeader title="Edit Project" sx={{ backgroundColor: "#f7f7f7" }} />
+
         <Divider />
         <CardContent sx={{ pt: 5 }}>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -369,8 +375,9 @@ const EditProjectForm: React.FC = () => {
               {/* Card Image Upload */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Card Image
-                </Typography>
+                Card Image <span className="text-xs text-zinc-600">
+                      (Image dimensions: 1200x650)
+                    </span>                </Typography>
                 <Box
                   sx={{
                     border: "2px dashed #ccc",
@@ -460,7 +467,7 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Bedrooms / Price"
+                  label="Size"
                   name="bedRooms"
                   type="text"
                   value={formData.bedRooms}
@@ -471,9 +478,9 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Size (sq ft)"
+                  label="Category"
                   name="size"
-                  type="number"
+                  type="text"
                   value={formData.size}
                   onChange={handleChange}
                 />
@@ -505,7 +512,10 @@ const EditProjectForm: React.FC = () => {
               {/* Cover Image Upload */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Cover Image
+                  Cover Image{" "}
+                  <span className="text-xs text-zinc-600">
+                    (Image dimensions: 1920 x 1080)
+                  </span>
                 </Typography>
                 <Box
                   sx={{
@@ -581,9 +591,14 @@ const EditProjectForm: React.FC = () => {
               </Grid>
 
               {/* Overview Image Upload */}
+
+              {/* Floor Image File Upload */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Floor Structure
+                  Floor Structure Images{" "}
+                  <span className="text-xs text-zinc-600">
+                    (Image dimensions: 1080x700)
+                  </span>
                 </Typography>
                 <Box
                   sx={{
@@ -593,7 +608,6 @@ const EditProjectForm: React.FC = () => {
                     textAlign: "center",
                     cursor: "pointer",
                   }}
-                  onClick={() => overviewImageInputRef.current?.click()}
                 >
                   <input
                     type="file"
@@ -732,7 +746,10 @@ const EditProjectForm: React.FC = () => {
               {/* Gallery Images Upload */}
               <Grid item xs={12}>
                 <Typography variant="h6" className="mb-2">
-                  Gallery Images
+                  Gallery Images{" "}
+                  <span className="text-xs text-zinc-600">
+                    (Image dimensions: 1080x700)
+                  </span>
                 </Typography>
                 <Button
                   variant="outlined"
@@ -800,62 +817,64 @@ const EditProjectForm: React.FC = () => {
 
               {/* Brochure URL */}
               <Grid item xs={12}>
-  <Typography variant="subtitle1" gutterBottom>
-    Brochure PDF
-  </Typography>
-  <Box
-    sx={{
-      border: "2px dashed #ccc",
-      borderRadius: 2,
-      p: 2,
-      textAlign: "center",
-      cursor: "pointer",
-    }}
-  >
-    <input
-      type="file"
-      accept="application/pdf"
-      onChange={handleBrochureFileSelect}
-      style={{ display: "none" }}
-      id="brochure-file-upload"
-      ref={brochureInputRef}
-    />
-    <label htmlFor="brochure-file-upload" style={{ cursor: "pointer" }}>
-      <Typography variant="body2" color="textSecondary">
-        Click to select Brochure PDF
-      </Typography>
-    </label>
-  </Box>
-  {brochureFile && (
-    <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
-      <Typography variant="body2">{brochureFileName}</Typography>
-      <IconButton
-        onClick={removeBrochureFile}
-        sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
-        size="small"
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </Box>
-  )}
-  {(formData.brochureURL || brochureFile) && (
-    <Button
-      variant="outlined"
-      onClick={() => {
-        if (brochureFile) {
-          const pdfUrl = URL.createObjectURL(brochureFile);
-          window.open(pdfUrl, "_blank");
-        } else if (formData.brochureURL) {
-          window.open(formData.brochureURL, "_blank");
-        }
-      }}
-      sx={{ mt: 2 }}
-    >
-      View Brochure PDF
-    </Button>
-  )}
-</Grid>
-
+                <Typography variant="subtitle1" gutterBottom>
+                  Brochure PDF
+                </Typography>
+                <Box
+                  sx={{
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    p: 2,
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleBrochureFileSelect}
+                    style={{ display: "none" }}
+                    id="brochure-file-upload"
+                    ref={brochureInputRef}
+                  />
+                  <label
+                    htmlFor="brochure-file-upload"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Typography variant="body2" color="textSecondary">
+                      Click to select Brochure PDF
+                    </Typography>
+                  </label>
+                </Box>
+                {brochureFile && (
+                  <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
+                    <Typography variant="body2">{brochureFileName}</Typography>
+                    <IconButton
+                      onClick={removeBrochureFile}
+                      sx={{ ml: 1, bgcolor: "rgba(255,255,255,0.7)" }}
+                      size="small"
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
+                {(formData.brochureURL || brochureFile) && (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      if (brochureFile) {
+                        const pdfUrl = URL.createObjectURL(brochureFile);
+                        window.open(pdfUrl, "_blank");
+                      } else if (formData.brochureURL) {
+                        window.open(formData.brochureURL, "_blank");
+                      }
+                    }}
+                    sx={{ mt: 2 }}
+                  >
+                    View Brochure PDF
+                  </Button>
+                )}
+              </Grid>
             </Grid>
 
             <div className="flex justify-end mt-6">
