@@ -12,7 +12,7 @@ const ProjectEnquiryPage: React.FC = () => {
 
       if (data.success === 0) {
         // Fetch the file as a blob to handle binary data properly.
-        fetch(data.result, {
+        fetch(data.result.excelFileURL, {
           method: 'GET',
         })
           .then(response => response.blob())
