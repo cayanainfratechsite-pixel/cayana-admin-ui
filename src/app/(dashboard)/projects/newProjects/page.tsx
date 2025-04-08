@@ -388,7 +388,7 @@ const AddProjectForm: React.FC = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Base Price"
+                    label="Rera Number"
                     name="basePrice"
                     type="number"
                     value={formData.basePrice}

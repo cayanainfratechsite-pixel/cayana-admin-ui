@@ -442,9 +442,9 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Base Price"
+                  label="Rera Number"
                   name="basePrice"
-                  type="number"
+                  type="text"
                   value={formData.basePrice}
                   onChange={handleChange}
                 />
@@ -467,9 +467,9 @@ const EditProjectForm: React.FC = () => {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Size"
+                  label="Price"
                   name="bedRooms"
-                  type="text"
+                  type="number"
                   value={formData.bedRooms}
                   onChange={handleChange}
                 />
