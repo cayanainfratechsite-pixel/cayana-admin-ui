@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function ResetPassword() {
   const [email, setEmail] = useState('');
@@ -10,8 +11,18 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+    
+  useEffect(() => {
+    const emailParam = searchParams.get('email');
+    if (emailParam) {
+    setEmail(emailParam);
+    }
+  }, [searchParams]);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -25,7 +36,7 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://192.168.29.226:4000/api/v1/user/reset-password',
+      const response = await axios.post('https://api.cayana.co.in/api/v1/user/reset-password',
         {
           email,
           password,
@@ -44,6 +55,14 @@ export default function ResetPassword() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
@@ -56,50 +75,57 @@ export default function ResetPassword() {
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
+          <div className="relative">
             <label htmlFor="password" className="sr-only">
               New Password
             </label>
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="New Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center z-10 pointer-events-auto"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <VisibilityOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Visibility className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
           </div>
-          <div>
+          <div className="relative">
             <label htmlFor="confirmPassword" className="sr-only">
               Confirm Password
             </label>
             <input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center z-10 pointer-events-auto"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? (
+                <VisibilityOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Visibility className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
           </div>
           <div>
             <button

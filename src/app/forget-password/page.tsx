@@ -20,11 +20,11 @@ export default function ForgotPassword() {
     }
 
     try {
-      const response = await axios.post('http://192.168.29.226:4000/api/v1/user/forget-password', {
+      const response = await axios.post('https://api.cayana.co.in/api/v1/user/forget-password', {
         email,
       });
       if(response.status===200) {
-        router.push('/reset-password');
+        router.push('/reset-password/?email=' + email);
       }else{
         setError('Failed to send reset password email');
       }
