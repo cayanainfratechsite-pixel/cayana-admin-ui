@@ -16,6 +16,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie"; 
+import Link from "next/link";
 
 const SignInPage: NextPage = () => {
   const [email, setEmail] = useState<string>("");
@@ -172,6 +173,7 @@ const SignInPage: NextPage = () => {
               }}
             />
           </Box>
+          <Link className="text-red-500 font-medium" href={"/forget-password"}>forgot password?</Link>
           <Button
             type="submit"
             variant="contained"
@@ -182,6 +184,7 @@ const SignInPage: NextPage = () => {
               backgroundColor: "#007AFF",
               textTransform: "none",
               fontFamily: "Poppins, sans-serif",
+              marginTop: "10px",
               fontWeight: 600,
               "&:hover": {
                 backgroundColor: "#0056b3",
