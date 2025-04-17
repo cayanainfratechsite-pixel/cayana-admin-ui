@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { fetchJobPosts, deleteJobPost } from "@/api/JobPosts/page";
+import { fetchJobPosts, deleteJobPost } from "@/api/jobPosts/page";
 
 export interface JobPosts {
   _id: string;
