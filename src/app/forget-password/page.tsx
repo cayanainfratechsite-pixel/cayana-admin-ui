@@ -8,11 +8,13 @@ import { useRouter } from 'next/navigation';
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     if (!email) {
       setError('Please enter your email address');
@@ -20,16 +22,14 @@ export default function ForgotPassword() {
     }
 
     try {
-      const response = await axios.post('https://api.cayana.co.in/api/v1/user/forget-password', {
+      await axios.post('https://api.cayana.co.in/api/v1/user/forget-password', {
         email,
       });
-      if(response.status===200) {
-        router.push('/reset-password/?email=' + email);
-      }else{
-        setError('Failed to send reset password email');
-      }
+      setSuccess('If an account with that email exists, we\'ve sent a password reset link. Please check your inbox.');
+      setEmail(''); 
     } catch (err:any) {
-      setError('Failed to process your request. Please try again.');
+      setSuccess('If an account with that email exists, we\'ve sent a password reset link. Please check your inbox.');
+      setEmail(''); 
     }
   };
 
@@ -53,6 +53,11 @@ export default function ForgotPassword() {
           </Alert>
         )}
 
+        {success && (
+          <Alert severity="success" sx={{ width: '100%', mb: 2 }}>
+            {success}
+          </Alert>
+        )}
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function ResetPasswordInner() {
-  const [email, setEmail] = useState('');
+  const [token, setToken ] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,9 +18,9 @@ function ResetPasswordInner() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const emailParam = searchParams.get('email');
+    const emailParam = searchParams.get('token');
     if (emailParam) {
-      setEmail(emailParam);
+      setToken(emailParam);
     }
   }, [searchParams]);
 
@@ -38,7 +38,7 @@ function ResetPasswordInner() {
     setLoading(true);
     try {
       const response = await axios.post('https://api.cayana.co.in/api/v1/user/reset-password', {
-        email,
+        token,
         password,
       });
 
