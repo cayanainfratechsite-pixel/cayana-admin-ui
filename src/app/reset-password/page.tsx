@@ -37,10 +37,10 @@ function ResetPasswordInner() {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://api.cayana.co.in/api/v1/user/reset-password', {
-        token,
-        password,
-      });
+      const response = await axios.post('https://api.cayana.co.in/api/v1/user/reset-password?token=' + token, {
+          password
+        }
+      );
 
       if (response.status === 200) {
         router.push('/');
