@@ -13,9 +13,9 @@ import {
   Card,
   CardContent,
   Typography,
-  Autocomplete,
-  Chip,
-  Avatar,
+  // Autocomplete,
+  // Chip,
+  // Avatar,
   Box,
   IconButton,
 } from "@mui/material";
@@ -43,8 +43,8 @@ const AddProjectForm: React.FC = () => {
     brochureURL: "",
   });
   const router = useRouter();
-  const [amenitiesOptions, setAmenitiesOptions] = useState<any[]>([]);
-  const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
+  // const [amenitiesOptions, setAmenitiesOptions] = useState<any[]>([]);
+  // const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -54,12 +54,12 @@ const AddProjectForm: React.FC = () => {
   // States for file objects and previews for Card, Cover, and Overview images
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
+  // const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
   const [cardImagePreview, setCardImagePreview] = useState<string>("");
   const [coverImagePreview, setCoverImagePreview] = useState<string>("");
-  const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
-    []
-  );
+  // const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
+  //   []
+  // );
 
   // New state declarations for brochure file
   const [brochureFile, setBrochureFile] = useState<File | null>(null);
@@ -73,27 +73,27 @@ const AddProjectForm: React.FC = () => {
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
 
   // Optionally track overall upload progress (if needed)
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  // const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   // Refs for file inputs
   const cardImageInputRef = useRef<HTMLInputElement>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
-  const overviewImageInputRef = useRef<HTMLInputElement>(null);
+  // const overviewImageInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const fetchAmenities = async () => {
-      try {
-        const response = await axios.get(
-          "https://api.cayana.co.in/api/v1/amenity"
-        );
-        setAmenitiesOptions(response.data.result);
-      } catch (error) {
-        console.error("Error fetching amenities:", error);
-      }
-    };
-    fetchAmenities();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAmenities = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://cayana.co.in/api/v1/amenity"
+  //       );
+  //       setAmenitiesOptions(response.data.result);
+  //     } catch (error) {
+  //       console.error("Error fetching amenities:", error);
+  //     }
+  //   };
+  //   fetchAmenities();
+  // }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any
@@ -149,21 +149,21 @@ const AddProjectForm: React.FC = () => {
   };
 
   // File input handlers for Overview Image
-  const handleOverviewImageSelect = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const newFiles = Array.from(files);
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setOverviewImageFile(newFiles); // Replace existing files
-      setOverviewImagePreview(newPreviews); // Replace existing previews
-    }
-  };
-  const removeOverviewImage = (index: number) => {
-    setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
-    setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
-  };
+  // const handleOverviewImageSelect = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const files = e.target.files;
+  //   if (files && files.length > 0) {
+  //     const newFiles = Array.from(files);
+  //     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+  //     setOverviewImageFile(newFiles); // Replace existing files
+  //     setOverviewImagePreview(newPreviews); // Replace existing previews
+  //   }
+  // };
+  // const removeOverviewImage = (index: number) => {
+  //   setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
+  //   setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
+  // };
 
   // File input handlers for multiple Gallery Images
   const handleGalleryFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,7 +209,7 @@ const AddProjectForm: React.FC = () => {
     formDataPayload.append("locationEmbedURL", formData.locationEmbedURL);
     // formDataPayload.append("brochureURL", formData.brochureURL);
     // Append amenities as a JSON string
-    formDataPayload.append("amenities", JSON.stringify(selectedAmenities));
+    // formDataPayload.append("amenities", JSON.stringify(selectedAmenities));
 
     if (brochureFile) {
       formDataPayload.append("brochureURL", brochureFile);
@@ -222,11 +222,11 @@ const AddProjectForm: React.FC = () => {
     if (coverImageFile) {
       formDataPayload.append("coverImage", coverImageFile);
     }
-    if (overviewImageFile) {
-      overviewImageFile.forEach((file, index) => {
-        formDataPayload.append("overViewImage", file);
-      });
-    }
+    // if (overviewImageFile) {
+    //   overviewImageFile.forEach((file, index) => {
+    //     formDataPayload.append("overViewImage", file);
+    //   });
+    // }
     // Append each gallery image file (if any)
     if (galleryFiles.length > 0) {
       galleryFiles.forEach((file) => {
@@ -236,7 +236,7 @@ const AddProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://api.cayana.co.in/api/v1/project/add",
+        "https://cayana.co.in/api/v1/project/add",
         {
           method: "POST",
           body: formDataPayload,
@@ -390,7 +390,7 @@ const AddProjectForm: React.FC = () => {
                     variant="outlined"
                     label="Rera Number"
                     name="basePrice"
-                    type="number"
+                    type="text"
                     value={formData.basePrice}
                     onChange={handleChange}
                   />
@@ -413,9 +413,9 @@ const AddProjectForm: React.FC = () => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Size"
+                    label="Price"
                     name="bedRooms"
-                    type="text"
+                    type="number"
                     value={formData.bedRooms}
                     onChange={handleChange}
                   />
@@ -538,7 +538,7 @@ const AddProjectForm: React.FC = () => {
                 </Grid>
 
                 {/* Floor Image File Upload */}
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
                     Floor Structure Images{" "}
                     <span className="text-xs text-zinc-600">
@@ -606,7 +606,7 @@ const AddProjectForm: React.FC = () => {
                       ))}
                     </Box>
                   )}
-                </Grid>
+                </Grid> */}
 
                 {/* Details */}
                 <Grid item xs={12}>
@@ -635,7 +635,7 @@ const AddProjectForm: React.FC = () => {
                 </Grid>
 
                 {/* Amenities Autocomplete */}
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Typography variant="subtitle1" gutterBottom>
                     Select Amenities
                   </Typography>
@@ -685,7 +685,7 @@ const AddProjectForm: React.FC = () => {
                       ))
                     }
                   />
-                </Grid>
+                </Grid> */}
 
                 {/* Gallery Images Upload */}
                 <Grid item xs={12}>

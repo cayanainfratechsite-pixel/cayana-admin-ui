@@ -12,12 +12,11 @@ import {
   FormControl,
   Card,
   CardContent,
-  CardHeader,
   Divider,
   Typography,
-  Autocomplete,
-  Chip,
-  Avatar,
+  // Autocomplete,
+  // Chip,
+  // Avatar,
   Box,
   IconButton,
 } from "@mui/material";
@@ -50,8 +49,8 @@ const EditProjectForm: React.FC = () => {
   });
 
   // Amenities & snackbar state.
-  const [amenitiesOptions, setAmenitiesOptions] = useState<any[]>([]);
-  const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
+  // const [amenitiesOptions, setAmenitiesOptions] = useState<any[]>([]);
+  // const [selectedAmenities, setSelectedAmenities] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -62,12 +61,12 @@ const EditProjectForm: React.FC = () => {
   // File objects and preview states for image fields.
   const [cardImageFile, setCardImageFile] = useState<File | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
+  // const [overviewImageFile, setOverviewImageFile] = useState<File[]>([]);
   const [cardImagePreview, setCardImagePreview] = useState<string>("");
   const [coverImagePreview, setCoverImagePreview] = useState<string>("");
-  const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
-    []
-  );
+  // const [overviewImagePreview, setOverviewImagePreview] = useState<string[]>(
+  //   []
+  // );
 
   // New state declarations for brochure file
   const [brochureFile, setBrochureFile] = useState<File | null>(null);
@@ -79,27 +78,28 @@ const EditProjectForm: React.FC = () => {
   // Gallery images: we'll store files and their preview URLs.
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+  const [existingGalleryImageurl, setExistingGalleryImageurl] = useState([]);
 
   // Refs for file inputs.
   const cardImageInputRef = useRef<HTMLInputElement>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
-  const overviewImageInputRef = useRef<HTMLInputElement>(null);
+  // const overviewImageInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch amenities options.
-  useEffect(() => {
-    const fetchAmenities = async () => {
-      try {
-        const response = await axios.get(
-          "https://api.cayana.co.in/api/v1/amenity"
-        );
-        setAmenitiesOptions(response.data.result);
-      } catch (error) {
-        console.error("Error fetching amenities:", error);
-      }
-    };
-    fetchAmenities();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAmenities = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://cayana.co.in/api/v1/amenity"
+  //       );
+  //       setAmenitiesOptions(response.data.result);
+  //     } catch (error) {
+  //       console.error("Error fetching amenities:", error);
+  //     }
+  //   };
+  //   fetchAmenities();
+  // }, []);
 
   // Fetch project data by id and prepopulate form fields and image previews.
   useEffect(() => {
@@ -107,7 +107,7 @@ const EditProjectForm: React.FC = () => {
     const fetchProject = async () => {
       try {
         const response = await axios.get(
-          `https://api.cayana.co.in/api/v1/project/${id}`
+          `https://cayana.co.in/api/v1/project/${id}`
         );
         const project = response.data.result;
         setFormData({
@@ -128,11 +128,12 @@ const EditProjectForm: React.FC = () => {
           gallery: project.gallery || [],
           brochureURL: project.brochureURL || "",
         });
-        setSelectedAmenities(project.amenities || []);
+        // setSelectedAmenities(project.amenities || []);
         setCardImagePreview(project.cardImage || "");
         setCoverImagePreview(project.coverImage || "");
-        setOverviewImagePreview(project.overViewImage || "");
-        setGalleryPreviews(project.gallery || []);
+        // setOverviewImagePreview(project.overViewImage || "");
+        // setGalleryPreviews(project.gallery || []);
+        setExistingGalleryImageurl(project.gallery || []);
       } catch (error) {
         console.error("Error fetching project:", error);
       } finally {
@@ -177,47 +178,59 @@ const EditProjectForm: React.FC = () => {
   };
 
   // --- File input handlers for Overview Image ---
-  const handleOverviewImageSelect = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const newFiles = Array.from(files);
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setOverviewImageFile(newFiles); // Replace existing files
-      setOverviewImagePreview(newPreviews); // Replace existing previews
-    }
-  };
+  // const handleOverviewImageSelect = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const files = e.target.files;
+  //   if (files && files.length > 0) {
+  //     const newFiles = Array.from(files);
+  //     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+  //     setOverviewImageFile(newFiles); // Replace existing files
+  //     setOverviewImagePreview(newPreviews); // Replace existing previews
+  //   }
+  // };
 
-  const removeOverviewImage = (index: number) => {
-    setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
-    setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
-  };
+  // const removeOverviewImage = (index: number) => {
+  //   setOverviewImageFile((prev) => prev.filter((_, i) => i !== index));
+  //   setOverviewImagePreview((prev) => prev.filter((_, i) => i !== index));
+  // };
 
-  // --- File input handlers for Gallery Images ---
+
   const handleGalleryFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const newFiles: File[] = [];
-      const newPreviews: string[] = [];
-      for (let i = 0; i < files.length; i++) {
-        newFiles.push(files[i]);
-        newPreviews.push(URL.createObjectURL(files[i]));
-      }
-      const updatedFiles = [...galleryFiles, ...newFiles];
-      const updatedPreviews = [...galleryPreviews, ...newPreviews];
-      setGalleryFiles(updatedFiles);
-      setGalleryPreviews(updatedPreviews);
+      const filesArray = Array.from(files);
+      setGalleryFiles((prev) => [...prev, ...filesArray]);
+
+      const previews = filesArray.map((file) => URL.createObjectURL(file));
+      setGalleryPreviews((prev) => [...prev, ...previews]);
     }
   };
-  const removeGalleryImage = (index: number) => {
-    const updatedFiles = [...galleryFiles];
-    const updatedPreviews = [...galleryPreviews];
-    updatedFiles.splice(index, 1);
-    updatedPreviews.splice(index, 1);
-    setGalleryFiles(updatedFiles);
-    setGalleryPreviews(updatedPreviews);
+
+  const removeExistingGalleryImage = (index: number) => {
+    setExistingGalleryImageurl((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
   };
+
+  const removeNewGalleryImage = (index: number) => {
+    setGalleryFiles((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+
+    setGalleryPreviews((prev) => {
+      // Revoke URL to prevent memory leaks
+      URL.revokeObjectURL(prev[index]);
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+  };
+
 
   const handleBrochureFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -249,34 +262,41 @@ const EditProjectForm: React.FC = () => {
     formDataPayload.append("details", formData.details);
     formDataPayload.append("locationEmbedURL", formData.locationEmbedURL);
     // formDataPayload.append("brochureURL", formData.brochureURL);
-    // Append amenities as double-stringified JSON.
+
+    // Add existing gallery URLs as a JSON string
     formDataPayload.append(
-      "amenities",
-      JSON.stringify(
-        selectedAmenities.map((amenity: any) => ({
-          name: amenity.name,
-          icon: amenity.icon,
-        }))
-      )
+      "existingGallery",
+      JSON.stringify(existingGalleryImageurl)
     );
+
+    // Append amenities as double-stringified JSON.
+    // formDataPayload.append(
+    //   "amenities",
+    //   JSON.stringify(
+    //     selectedAmenities.map((amenity: any) => ({
+    //       name: amenity.name,
+    //       icon: amenity.icon,
+    //     }))
+    //   )
+    // );
 
     if (brochureFile) {
       formDataPayload.append("brochureURL", brochureFile);
     }
 
     // Append file fields if a new file was selected.
-
     if (cardImageFile) {
       formDataPayload.append("cardImage", cardImageFile);
     }
     if (coverImageFile) {
       formDataPayload.append("coverImage", coverImageFile);
     }
-    if (overviewImageFile) {
-      overviewImageFile.forEach((file) => {
-        formDataPayload.append("overViewImage", file);
-      });
-    }
+    // if (overviewImageFile) {
+    //   overviewImageFile.forEach((file) => {
+    //     formDataPayload.append("overViewImage", file);
+    //   });
+    // }
+
     // Append each gallery file if any.
     if (galleryFiles.length > 0) {
       galleryFiles.forEach((file) => {
@@ -286,7 +306,7 @@ const EditProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://api.cayana.co.in/api/v1/project/edit/${id}`,
+        `https://cayana.co.in/api/v1/project/edit/${id}`,
         {
           method: "PUT",
           body: formDataPayload,
@@ -326,18 +346,17 @@ const EditProjectForm: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col gap-4">
-
-<div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Edit Project {" "} <span className="text-xs text-zinc-600">
-                (Maximum size limit 50MB)
-              </span>
-            </h2>
-          </div>
+      <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+        <div className="flex-1">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Edit Project{" "}
+            <span className="text-xs text-zinc-600">
+              (Maximum size limit 50MB)
+            </span>
+          </h2>
         </div>
+      </div>
       <Card className="shadow-lg">
-
         <Divider />
         <CardContent sx={{ pt: 5 }}>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -375,9 +394,11 @@ const EditProjectForm: React.FC = () => {
               {/* Card Image Upload */}
               <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
-                Card Image <span className="text-xs text-zinc-600">
-                      (Image dimensions: 1200x650)
-                    </span>                </Typography>
+                  Card Image{" "}
+                  <span className="text-xs text-zinc-600">
+                    (Image dimensions: 1200x650)
+                  </span>{" "}
+                </Typography>
                 <Box
                   sx={{
                     border: "2px dashed #ccc",
@@ -593,7 +614,7 @@ const EditProjectForm: React.FC = () => {
               {/* Overview Image Upload */}
 
               {/* Floor Image File Upload */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
                   Floor Structure Images{" "}
                   <span className="text-xs text-zinc-600">
@@ -661,7 +682,7 @@ const EditProjectForm: React.FC = () => {
                     ))}
                   </Box>
                 )}
-              </Grid>
+              </Grid> */}
 
               {/* Details */}
               <Grid item xs={12}>
@@ -690,7 +711,7 @@ const EditProjectForm: React.FC = () => {
               </Grid>
 
               {/* Amenities Autocomplete */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom>
                   Select Amenities
                 </Typography>
@@ -727,6 +748,7 @@ const EditProjectForm: React.FC = () => {
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
+                      key={index}
                         avatar={<Avatar src={option.icon} />}
                         label={option.name}
                         {...getTagProps({ index })}
@@ -741,21 +763,21 @@ const EditProjectForm: React.FC = () => {
                     ))
                   }
                 />
-              </Grid>
+              </Grid> */}
 
               {/* Gallery Images Upload */}
+
               <Grid item xs={12}>
-                <Typography variant="h6" className="mb-2">
-                  Gallery Images{" "}
-                  <span className="text-xs text-zinc-600">
-                    (Image dimensions: 1080x700)
-                  </span>
+                <Typography variant="h6" gutterBottom>
+                  Gallery Images
                 </Typography>
+
+                {/* Upload button */}
                 <Button
                   variant="outlined"
                   onClick={() => galleryInputRef.current?.click()}
                 >
-                  Upload Gallery Images
+                  Upload New Gallery Images
                 </Button>
                 <input
                   type="file"
@@ -763,56 +785,92 @@ const EditProjectForm: React.FC = () => {
                   multiple
                   ref={galleryInputRef}
                   style={{ display: "none" }}
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    if (files && files.length > 0) {
-                      const newFiles: File[] = [];
-                      const newPreviews: string[] = [];
-                      for (let i = 0; i < files.length; i++) {
-                        newFiles.push(files[i]);
-                        newPreviews.push(URL.createObjectURL(files[i]));
-                      }
-                      const updatedFiles = [...galleryFiles, ...newFiles];
-                      const updatedPreviews = [
-                        ...galleryPreviews,
-                        ...newPreviews,
-                      ];
-                      setGalleryFiles(updatedFiles);
-                      setGalleryPreviews(updatedPreviews);
-                    }
-                  }}
+                  onChange={handleGalleryFilesSelect}
                 />
-                <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap" }}>
-                  {galleryPreviews.map((preview, index) => (
+
+                {/* Existing Gallery Images */}
+                {existingGalleryImageurl.length > 0 && (
+                  <>
+                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                      Existing Images
+                    </Typography>
                     <Box
-                      key={index}
-                      sx={{ position: "relative", display: "inline-block" }}
+                      sx={{ mt: 1, display: "flex", gap: 2, flexWrap: "wrap" }}
                     >
-                      <img
-                        src={preview}
-                        alt={`Gallery Preview ${index + 1}`}
-                        style={{
-                          width: 150,
-                          height: 150,
-                          borderRadius: 8,
-                          objectFit: "cover",
-                        }}
-                      />
-                      <IconButton
-                        onClick={() => removeGalleryImage(index)}
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          bgcolor: "rgba(255,255,255,0.7)",
-                        }}
-                        size="small"
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
+                      {existingGalleryImageurl.map((image, index) => (
+                        <Box
+                          key={`existing-${index}`}
+                          sx={{ position: "relative", display: "inline-block" }}
+                        >
+                          <img
+                            src={image}
+                            alt={`Existing Gallery Image ${index + 1}`}
+                            style={{
+                              width: 150,
+                              height: 150,
+                              borderRadius: 8,
+                              objectFit: "cover",
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => removeExistingGalleryImage(index)}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              bgcolor: "rgba(255,255,255,0.7)",
+                            }}
+                            size="small"
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      ))}
                     </Box>
-                  ))}
-                </Box>
+                  </>
+                )}
+
+                {/* New Gallery Images */}
+                {galleryPreviews.length > 0 && (
+                  <>
+                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                      New Images
+                    </Typography>
+                    <Box
+                      sx={{ mt: 1, display: "flex", gap: 2, flexWrap: "wrap" }}
+                    >
+                      {galleryPreviews.map((preview, index) => (
+                        <Box
+                          key={`new-${index}`}
+                          sx={{ position: "relative", display: "inline-block" }}
+                        >
+                          <img
+                            src={preview}
+                            alt={`New Gallery Image ${index + 1}`}
+                            style={{
+                              width: 150,
+                              height: 150,
+                              borderRadius: 8,
+                              objectFit: "cover",
+                            }}
+                          />
+                          <IconButton
+                            onClick={() => removeNewGalleryImage(index)}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              bgcolor: "rgba(255,255,255,0.7)",
+                            }}
+                            size="small"
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      ))}
+                    </Box>
+                  </>
+                )}
               </Grid>
 
               {/* Brochure URL */}

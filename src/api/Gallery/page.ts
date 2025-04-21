@@ -1,7 +1,7 @@
 import { limit } from "@/lib/data";
 import axios, { AxiosProgressEvent } from "axios";
 
-const API_BASE_URL = "https://api.cayana.co.in/api/v1";
+const API_BASE_URL = "https://cayana.co.in/api/v1";
 
 export const fetchGallery = async () => {
   try {
@@ -22,7 +22,7 @@ export const fetchGallery = async () => {
 export const deleteImage = async (id: string) => {
   try {
     const response = await axios.delete(
-      `https://api.cayana.co.in/api/v1/gallery/delete/${id}`
+      `https://cayana.co.in/api/v1/gallery/delete/${id}`
     );
     return response.data;
   } catch (error) {
@@ -40,7 +40,7 @@ export const uploadImages = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://api.cayana.co.in/api/v1/gallery/upload",
+      "https://cayana.co.in/api/v1/gallery/upload",
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },

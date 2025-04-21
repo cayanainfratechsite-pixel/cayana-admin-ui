@@ -3,13 +3,11 @@
 import { useState } from 'react';
 import { Button, TextField, Box, Typography, Container, Alert } from '@mui/material';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +20,7 @@ export default function ForgotPassword() {
     }
 
     try {
-      await axios.post('https://api.cayana.co.in/api/v1/user/forget-password', {
+      await axios.post('https://cayana.co.in/api/v1/user/forget-password', {
         email,
       });
       setSuccess('If an account with that email exists, we\'ve sent a password reset link. Please check your inbox.');
