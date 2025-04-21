@@ -20,7 +20,7 @@ export default function ForgotPassword() {
     }
 
     try {
-      await axios.post('https://cayana.co.in/api/v1/user/forget-password', {
+      await axios.post('https://api.cayana.co.in/api/v1/user/forget-password', {
         email,
       });
       setSuccess('If an account with that email exists, we\'ve sent a password reset link. Please check your inbox.');
