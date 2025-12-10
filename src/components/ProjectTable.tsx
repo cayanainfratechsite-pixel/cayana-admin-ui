@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { deleteProject, fetchProjects } from "@/api/projects/page";
+import { deleteProject, fetchProjects } from "@/api/Projects/page";
 
 interface Project {
   _id: string;
