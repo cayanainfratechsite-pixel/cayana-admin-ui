@@ -3,7 +3,7 @@ import React from "react";
 import Button from "@/components/Button";
 import ApplicationsTable from "@/components/ApplicationsTable";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { downloadAppliedJobs } from "@/api/applications/page";
+import { downloadAppliedJobs } from "@/api/Applications/page";
 
 const ApplicationPage: React.FC = () => {
   const handleDownload = async () => {
