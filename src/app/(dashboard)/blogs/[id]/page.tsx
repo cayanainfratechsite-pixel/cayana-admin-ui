@@ -17,7 +17,7 @@ import TextEditor from "@/components/TextEditor";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import Button from "@/components/Button";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { fetchBlogById, updateBlog } from "@/api/blogs/page";
+import { fetchBlogById, updateBlog } from "@/api/Blogs/page";
 
 interface Blog {
   cardImage: string; // existing URL from server
