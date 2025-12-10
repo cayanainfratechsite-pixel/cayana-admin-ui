@@ -13,7 +13,7 @@ import {
 import {
   fetchProjectEnquiry,
   deleteProjectEnquiry,
-} from "@/api/projectEnquiry/page";
+} from "@/api/ProjectEnquiry/page";
 
 // Updated interface based on your API data
 interface ProjectEnquiry {
