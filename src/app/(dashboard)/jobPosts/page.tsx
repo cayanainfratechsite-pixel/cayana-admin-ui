@@ -13,7 +13,7 @@ import {
   Button as MuiButton,
 } from "@mui/material";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { createJobPost } from "@/api/jobPosts/page";
+import { createJobPost } from "@/api/JobPosts/page";
 
 const JobPostPage: React.FC = () => {
   const [newPostModalOpen, setNewPostModalOpen] = useState(false);

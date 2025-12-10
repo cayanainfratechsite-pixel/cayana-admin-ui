@@ -18,7 +18,7 @@ import Button from "@/components/Button";
 import BackupOutlinedIcon from "@mui/icons-material/BackupOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { fetchGallery, deleteImage, uploadImages } from "@/api/gallery/page";
+import { fetchGallery, deleteImage, uploadImages } from "@/api/Gallery/page";
 
 interface GalleryItem {
   _id: string;

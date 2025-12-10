@@ -13,7 +13,7 @@ import {
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import CustomButton from "./Button";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { fetchApplications, deleteApplication } from "@/api/applications/page";
+import { fetchApplications, deleteApplication } from "@/api/Applications/page";
 
 interface Applications {
   _id: string;

@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import SnackbarComponent from "@/components/SnackbarComponent";
-import { fetchBlogs, deleteBlog } from "@/api/blogs/page";
+import { fetchBlogs, deleteBlog } from "@/api/Blogs/page";
 
 interface BlogImage {
   cardImage: string;

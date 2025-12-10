@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import CustomButton from "./Button";
-import { fetchContactEnquiry, deleteContactEnquiry } from "@/api/contact/page";
+import { fetchContactEnquiry, deleteContactEnquiry } from "@/api/Contact/page";
 
 interface ContactEnquiry {
   _id: string;
