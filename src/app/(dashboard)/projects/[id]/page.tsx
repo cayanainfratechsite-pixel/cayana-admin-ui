@@ -91,7 +91,7 @@ const EditProjectForm: React.FC = () => {
   //   const fetchAmenities = async () => {
   //     try {
   //       const response = await axios.get(
-  //         "https://api.cayana.co.in/api/v1/amenity"
+  //         "https://backend.cayana.co.in/api/v1amenity"
   //       );
   //       setAmenitiesOptions(response.data.result);
   //     } catch (error) {
@@ -107,7 +107,7 @@ const EditProjectForm: React.FC = () => {
     const fetchProject = async () => {
       try {
         const response = await axios.get(
-          `https://api.cayana.co.in/api/v1/project/${id}`
+          `https://backend.cayana.co.in/api/v1project/${id}`
         );
         const project = response.data.result;
         setFormData({
@@ -306,7 +306,7 @@ const EditProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://api.cayana.co.in/api/v1/project/edit/${id}`,
+        `https://backend.cayana.co.in/api/v1project/edit/${id}`,
         {
           method: "PUT",
           body: formDataPayload,

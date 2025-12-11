@@ -85,7 +85,7 @@ const AddProjectForm: React.FC = () => {
   //   const fetchAmenities = async () => {
   //     try {
   //       const response = await axios.get(
-  //         "https://api.cayana.co.in/api/v1/amenity"
+  //         "https://backend.cayana.co.in/api/v1amenity"
   //       );
   //       setAmenitiesOptions(response.data.result);
   //     } catch (error) {
@@ -236,7 +236,7 @@ const AddProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://api.cayana.co.in/api/v1/project/add",
+        "https://backend.cayana.co.in/api/v1project/add",
         {
           method: "POST",
           body: formDataPayload,
