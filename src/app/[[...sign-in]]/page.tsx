@@ -30,7 +30,7 @@ const SignInPage: NextPage = () => {
     e.preventDefault();
     setErrorMessage("");
     try {
-      const response = await axios.post("https://backend.cayana.co.in/api/v1user/login", {
+      const response = await axios.post("https://backend.cayana.co.in/api/v1/user/login", {
         email,
         password,
       });
