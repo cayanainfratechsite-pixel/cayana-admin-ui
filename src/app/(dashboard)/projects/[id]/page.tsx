@@ -107,7 +107,7 @@ const EditProjectForm: React.FC = () => {
     const fetchProject = async () => {
       try {
         const response = await axios.get(
-          `https://backend.cayana.co.in/api/v1project/${id}`
+          `https://backend.cayana.co.in/api/v1/project/${id}`
         );
         const project = response.data.result;
         setFormData({
