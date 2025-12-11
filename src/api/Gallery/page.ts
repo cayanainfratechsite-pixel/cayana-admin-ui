@@ -1,7 +1,7 @@
 import { limit } from "@/lib/data";
 import axios, { AxiosProgressEvent } from "axios";
 
-const API_BASE_URL = "https://backend.cayana.co.in/api/v1/";
+const API_BASE_URL = "https://backend.cayana.co.in/api/v1";
 
 export const fetchGallery = async () => {
   try {
