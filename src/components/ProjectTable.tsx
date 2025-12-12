@@ -147,18 +147,13 @@ const ProjectsTable: React.FC = () => {
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-100"
     >
       <td className="px-4 py-5">
-        {/* <Image
+        <Image
           src={project.cardImage}
           alt={project.name}
           width={50}
           height={50}
-        /> */}
-        <Image
-  src={`https://backend.cayana.co.in/${project.cardImage}`}
-  alt={project.name}
-  width={50}
-  height={50}
-/>
+        />
+       
 
       </td>
       <td className="px-4 py-2">{project.name}</td>
