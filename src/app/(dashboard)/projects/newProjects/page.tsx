@@ -236,7 +236,7 @@ const AddProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://backend.cayana.co.in/api/v1/project/add/",
+        "https://backend.cayana.co.in/api/v1/project/add",
         {
           method: "POST",
           body: formDataPayload,
