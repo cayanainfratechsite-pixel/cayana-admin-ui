@@ -5,7 +5,7 @@ const API_BASE_URL = "https://backend.cayana.co.in/api/v1";
 
 export const fetchProjects = async (page: number) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/project/getAll`, {
+    const response = await axios.get(`${API_BASE_URL}/project/getall`, {
       params: {
         page,
         limit: limit,
