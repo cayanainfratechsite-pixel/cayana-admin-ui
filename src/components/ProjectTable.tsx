@@ -154,7 +154,7 @@ const ProjectsTable: React.FC = () => {
           height={50}
         /> */}
         <Image
-  src={`https://backend.cayana.co.in${project.cardImage}`}
+  src={`https://backend.cayana.co.in/${project.cardImage}`}
   alt={project.name}
   width={50}
   height={50}
