@@ -306,7 +306,7 @@ const EditProjectForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://backend.cayana.co.in/api/v1project/edit/${id}`,
+        `https://backend.cayana.co.in/api/v1/project/edit/${id}`,
         {
           method: "PUT",
           body: formDataPayload,
