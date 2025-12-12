@@ -38,10 +38,12 @@ const nextConfig: NextConfig = {
       "www.photocrati.com",
       "localhost",
       "145.223.23.134",
-      "api.cayana.co.in"
+      "api.cayana.co.in",
+      "backend.cayana.co.in"  // ✅ Add this
     ],
   },
 };
 
 export default nextConfig;
+
 
