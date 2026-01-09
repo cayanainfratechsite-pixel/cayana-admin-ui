@@ -35,33 +35,21 @@ const SignInPage: NextPage = () => {
         password,
       });
 
-      // Extract tokens from response headers
-      const authHeader = response.headers["authorization"];
-      const refreshHeader = response.headers["refresh-token"];
+      // Extract token from response body
+      const { success, result } = response.data;
   
-      if (!authHeader) {
-        throw new Error("Authorization or refresh token missing in headers.");
+      if (success !== 0 || !result?.token) {
+        throw new Error("Login failed - invalid response format");
       }
 
-      // Remove 'Bearer ' from the auth header to get the token
-      const tokenWithoutBearer = authHeader.replace("Bearer ", "");
-
       // Store the access token in a cookie
-      Cookies.set("access-token", tokenWithoutBearer, {
+      Cookies.set("access-token", result.token, {
         expires: 1, // Cookie expires in 1 day (adjust as needed)
         sameSite: "strict",
       });
 
-      // Optional: You could also store the refresh token if needed
-      // Cookies.set("refresh-token", refreshHeader, {
-      //   expires: 7, // Adjust expiration as required
-      //   secure: process.env.NODE_ENV === "production",
-      //   sameSite: "strict",
-      // });
-
-      console.log("Token without Bearer", tokenWithoutBearer);
-      console.log("Refresh token", refreshHeader);
       console.log("Login successful", response.data);
+      console.log("User:", result.name, result.email);
       // Redirect to /projects upon successful login
       router.push("/projects");
     } catch (error) {
