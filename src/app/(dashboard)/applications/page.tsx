@@ -14,15 +14,15 @@ const ApplicationPage: React.FC = () => {
       if (data.success === 0) {
         // Fetch the file as a blob to handle binary data properly.
         fetch(data.result, {
-          method: 'GET',
+          method: "GET",
         })
-          .then(response => response.blob())
-          .then(blob => {
+          .then((response) => response.blob())
+          .then((blob) => {
             // Create a temporary URL for the blob.
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = "Applications.xlsx";  // Set the filename for download.
+            link.download = "Applications.xlsx"; // Set the filename for download.
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -30,7 +30,7 @@ const ApplicationPage: React.FC = () => {
             // Revoke the blob URL to free memory.
             window.URL.revokeObjectURL(url);
           })
-          .catch(error => console.error("Download failed:", error));
+          .catch((error) => console.error("Download failed:", error));
       } else {
         console.error("Failed to download file: ", data.message);
       }
@@ -44,7 +44,9 @@ const ApplicationPage: React.FC = () => {
       <div className="w-full lg:w-full flex flex-col gap-8">
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
           <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-800">Applications Enquiry List</h2>
+            <h2 className="text-xl font-semibold text-gray-800">
+              Applications Enquiry List
+            </h2>
           </div>
           <div className="ml-4">
             <Button
