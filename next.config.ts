@@ -39,7 +39,8 @@ const nextConfig: NextConfig = {
       "localhost",
       "145.223.23.134",
       "api.cayana.co.in",
-      "backend.cayana.co.in"  // ✅ Add this
+      "backend.cayana.co.in" , // ✅ Add this
+      "cayana.s3.amazonaws.com"
     ],
   },
 };
