@@ -1,22 +1,22 @@
-import { limit } from "@/lib/data"; 
+import { limit } from "@/lib/data";
 import axios from "axios";
 
 const API_BASE_URL = "https://backend.cayana.co.in/api/v1";
 
 export const fetchApplications = async (page: number) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/job/applied-jobs`, {
-      params: {
-        page,
-        limit: limit,
-      },
+    const response = await axios.get(`${API_BASE_URL}/job/apply-jobs`, {
+      // params: {
+      //   page,
+      //   limit: limit,
+      // },
     });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
-          "An error occurred while fetching applications"
+        "An error occurred while fetching applications"
       );
     } else {
       throw new Error("An unknown error occurred while fetching applications");
@@ -28,7 +28,7 @@ export const fetchApplications = async (page: number) => {
 export const deleteApplication = async (applicationsId: string) => {
   try {
     const response = await axios.delete(
-      `${API_BASE_URL}/job/delete-applied-job/${applicationsId}`
+      `${API_BASE_URL}/job/apply-jobs/${applicationsId}`
     );
     if (response.status === 200) {
       return response.data;
@@ -47,7 +47,7 @@ export const deleteApplication = async (applicationsId: string) => {
 
 export const downloadAppliedJobs = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/job/excel-download-applied-jobs`);
+    const response = await axios.get(`${API_BASE_URL}/job/apply-jobs/export`);
     return response.data;
   } catch (error) {
     console.error("Error in downloadAppliedJobs API call: ", error);

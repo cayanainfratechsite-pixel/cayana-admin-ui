@@ -14,6 +14,7 @@ interface TableProps<T> {
 }
 
 const Table = <T,>({ columns, renderRow, data }: TableProps<T>) => {
+  console.log(data);
   return (
     <table className="w-full mt-4">
       <thead>
@@ -26,6 +27,7 @@ const Table = <T,>({ columns, renderRow, data }: TableProps<T>) => {
         </tr>
       </thead>
       <tbody>{data.map((item, index) => renderRow(item, index))}</tbody>
+
     </table>
   );
 };

@@ -16,7 +16,7 @@ export const fetchJobPosts = async (page: number) => {
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
-          "An error occurred while fetching job posts"
+        "An error occurred while fetching job posts"
       );
     } else {
       throw new Error("An unknown error occurred while fetching job posts");
@@ -27,7 +27,7 @@ export const fetchJobPosts = async (page: number) => {
 export const deleteJobPost = async (jobPostsId: string) => {
   try {
     const response = await axios.delete(
-      `${API_BASE_URL}/job/delete/${jobPostsId}`
+      `${API_BASE_URL}/job/${jobPostsId}`
     );
     if (response.status === 200) {
       return response.data;
@@ -50,7 +50,7 @@ export interface JobPostPayload {
 
 export const createJobPost = async (payload: JobPostPayload) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/job/post`, payload);
+    const response = await axios.post(`${API_BASE_URL}/job`, payload);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

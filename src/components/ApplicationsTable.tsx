@@ -30,7 +30,7 @@ interface ApplicationsResponse {
   success: number;
   message?: string;
   result: {
-    appliedJobs: Applications[];
+    applyJobs: Applications[];
     totalPages: number;
   };
 }
@@ -56,7 +56,7 @@ const ApplicationsTable: React.FC = () => {
     const fetchApplicationsData = async () => {
       try {
         const data: ApplicationsResponse = await fetchApplications(page);
-        setApplications(data.result.appliedJobs);
+        setApplications(data.result.applyJobs);
         setTotalPages(data.result.totalPages);
       } catch (error) {
         setError(error instanceof Error ? error.message : "An error occurred");
@@ -173,7 +173,7 @@ const ApplicationsTable: React.FC = () => {
       </td>
     </tr>
   );
-
+  console.log(applications);
   return (
     <div className="bg-white p-4 rounded-md flex-1">
       <Table columns={columns} renderRow={renderRow} data={applications} />

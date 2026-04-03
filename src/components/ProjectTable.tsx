@@ -153,7 +153,7 @@ const ProjectsTable: React.FC = () => {
           width={50}
           height={50}
         />
-       
+
 
       </td>
       <td className="px-4 py-2">{project.name}</td>
