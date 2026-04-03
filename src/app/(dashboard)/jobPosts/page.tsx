@@ -413,8 +413,6 @@ const JobPostPage: React.FC = () => {
                 >
                   <MenuItem value="Full-time">Full-time</MenuItem>
                   <MenuItem value="Part-time">Part-time</MenuItem>
-                  <MenuItem value="Contract">Contract</MenuItem>
-                  <MenuItem value="Internship">Internship</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
