@@ -16,7 +16,36 @@ import { fetchJobPosts, deleteJobPost } from "@/api/JobPosts/page";
 export interface JobPosts {
   _id: string;
   title: string;
-  description: number;
+  description: string;
+  company: string;
+  location: {
+    city: string;
+    headquarters: string;
+    type: string;
+  };
+  jobType: string;
+  salary: {
+    min: number;
+    max: number;
+    currency: string;
+    period: string;
+  };
+  benefits: string[];
+  responsibilities: string[];
+  requirements: {
+    experience: {
+      min: number;
+      max: number;
+    };
+    education: string;
+    preferredEducation: string;
+    skills: string[];
+    materialKnowledge: string[];
+  };
+  traits: string[];
+  industry: string;
+  whyJoinUs: string;
+  isActive: boolean;
 }
 
 interface JobPostsResponse {
